@@ -9,8 +9,8 @@ BINARY_NAME = vpn-dns
 CONFIG_DIR = $(HOME)/.config/vpn-dns
 CONFIG_PATH = $(CONFIG_DIR)/config.yaml
 
-DARWIN_ARM64 = $(BUILD_DIR)/arm64/$(BINARY_NAME)
-DARWIN_AMD64 = $(BUILD_DIR)/amd64/$(BINARY_NAME)
+DARWIN_ARM64 = $(BUILD_DIR)/$(BINARY_NAME)_arm64
+DARWIN_AMD64 = $(BUILD_DIR)/$(BINARY_NAME)_amd64
 
 all: \
 	$(DARWIN_ARM64) \
@@ -18,6 +18,7 @@ all: \
 
 define build_binary
     env GOOS="$(2)" GOARCH="$(3)" $(GC) -o "$(1)" "$(ENTRYFILE)"
+	upx "$(1)"
 endef
 
 GOSRC := \
