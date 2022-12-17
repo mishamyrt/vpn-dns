@@ -18,7 +18,6 @@ all: \
 
 define build_binary
     env GOOS="$(2)" GOARCH="$(3)" $(GC) -o "$(1)" "$(ENTRYFILE)"
-	upx "$(1)"
 endef
 
 GOSRC := \
