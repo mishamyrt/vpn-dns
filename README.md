@@ -2,6 +2,14 @@
 
 The service that changes DNS servers when connecting to a VPN. Solves connection problems on macOS.
 
+## Installing
+
+To install automatically, run the command.
+
+```sh
+curl -s https://raw.githubusercontent.com/mishamyrt/vpn-dns/main/scripts/install_latest.py | python3
+```
+
 ## Usage
 
 ### Configuration
