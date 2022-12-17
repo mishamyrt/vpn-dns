@@ -1,4 +1,4 @@
-# VPN DNS Changer
+# VPN DNS
 
 The service that changes DNS servers when connecting to a VPN. Solves connection problems on macOS.
 
