@@ -22,9 +22,9 @@ var startCmd = &cobra.Command{
 		}
 		cntxt := &daemon.Context{
 			PidFileName: app.PidPath,
-			PidFilePerm: 0644,
+			PidFilePerm: 0644, //nolint:gomnd
 			LogFileName: app.LogPath,
-			LogFilePerm: 0640,
+			LogFilePerm: 0640, //nolint:gomnd
 			WorkDir:     "./",
 		}
 

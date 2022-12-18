@@ -1,7 +1,6 @@
 package app
 
 import (
-	"io/ioutil"
 	"os"
 	"strconv"
 )
@@ -11,7 +10,7 @@ func readPid() int {
 	if err != nil {
 		return 0
 	}
-	data, err := ioutil.ReadFile(PidPath)
+	data, err := os.ReadFile(PidPath)
 	if err != nil {
 		return 0
 	}

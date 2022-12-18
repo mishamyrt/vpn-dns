@@ -7,7 +7,9 @@ import (
 	"strings"
 )
 
-// IsConnected checks if connection with given name is active
+var ErrCommandFailed = errors.New("scutil has been failed")
+
+// IsConnected checks if connection with given name is active.
 func IsConnected(name string) (bool, error) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
@@ -19,7 +21,7 @@ func IsConnected(name string) (bool, error) {
 		return false, err
 	}
 	if stderr.Len() > 0 {
-		return false, errors.New(stderr.String())
+		return false, ErrCommandFailed
 	}
 	return strings.HasPrefix(stdout.String(), "Connected"), nil
 }

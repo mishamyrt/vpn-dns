@@ -1,7 +1,6 @@
 package app
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -36,11 +35,17 @@ func (a *App) Run() {
 			}
 			if len(active) == 0 {
 				log.Println("VPNs not connected, setting fallback servers")
-				iface.SetDNS(a.config.FallbackServers)
+				err := iface.SetDNS(a.config.FallbackServers)
+				if err != nil {
+					log.Println("Error while setting fallback DNS")
+				}
 			} else {
 				servers := a.config.GetServers(active)
 				log.Println("Setting custom servers:", servers)
-				iface.SetDNS(servers)
+				err := iface.SetDNS(servers)
+				if err != nil {
+					log.Println("Error while setting custom DNS")
+				}
 			}
 		case err, ok := <-watcher.Errors:
 			if !ok {
@@ -65,7 +70,7 @@ func (a *App) Running() bool {
 
 func (a *App) Kill() error {
 	if a.pid == 0 {
-		return errors.New("Daemon is not running")
+		return ErrDaemonNotRunning
 	}
 	return syscall.Kill(a.pid, syscall.SIGINT)
 }

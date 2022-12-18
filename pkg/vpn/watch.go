@@ -2,6 +2,12 @@ package vpn
 
 import "time"
 
+// CloseCheckInterval means the time that passes between activity checks.
+var CloseCheckInterval = 100 * time.Millisecond
+
+// ConnectionCheckInterval means the time that passes between connection checks.
+var ConnectionCheckInterval = 500 * time.Millisecond
+
 type Watcher struct {
 	Names       []string
 	Updates     chan []string
@@ -17,7 +23,7 @@ func (w *Watcher) Close() {
 		if w.closed {
 			break
 		}
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(CloseCheckInterval)
 	}
 	close(w.Updates)
 	close(w.Errors)
@@ -31,7 +37,7 @@ func (w *Watcher) run(names []string) {
 	for {
 		hasChanges = false
 		active = make([]string, 0)
-		for i := range names {
+		for i := range names { //nolint:varnamelen
 			status, err := IsConnected(names[i])
 			if err != nil {
 				w.Errors <- err
@@ -49,7 +55,7 @@ func (w *Watcher) run(names []string) {
 			w.inited = true
 			w.Updates <- active
 		}
-		time.Sleep(500 * time.Millisecond)
+		time.Sleep(ConnectionCheckInterval)
 	}
 }
 
@@ -62,33 +68,3 @@ func NewWatcher(names []string) Watcher {
 	go watcher.run(names)
 	return watcher
 }
-
-// func getStatuses(names []string) ([]bool, err) {
-// 	statuses := make([]bool, len(names))
-// for i := range names {
-// 	status, err := IsConnected(names[i])
-// 	if err != nil {
-// 		return statuses, err
-// 	}
-// 	statuses[i] = status
-// }
-// 	return statuses, nil
-// }
-
-// func Watch(names []string) {
-// 	for {
-// 		err, statuses := getStatuses(names)
-// 		if err != nil {
-// 			fmt.Println("Can't fill initial statuses")
-// 		}
-// 	}
-
-// 	// Fill initial statuses
-// 	for i := range names {
-// 		status, err := IsConnected(names[i])
-// 		if err != nil {
-
-// 		}
-// 		statuses[i] =
-// 	}
-// }
