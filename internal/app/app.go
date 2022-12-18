@@ -6,12 +6,15 @@ import (
 	"log"
 	"os"
 	"syscall"
+
 	"vpn-dns/pkg/network"
 	"vpn-dns/pkg/vpn"
 )
 
-const PidPath = "/tmp/vpn-dns.pid"
-const LogPath = "/tmp/vpn-dns.log"
+const (
+	PidPath = "/tmp/vpn-dns.pid"
+	LogPath = "/tmp/vpn-dns.log"
+)
 
 type App struct {
 	pid    int

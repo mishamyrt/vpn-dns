@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+
 	"vpn-dns/internal/app"
 
 	"github.com/spf13/cobra"

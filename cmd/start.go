@@ -1,12 +1,9 @@
-/*
-Copyright © 2022 NAME HERE <EMAIL ADDRESS>
-
-*/
 package cmd
 
 import (
 	"fmt"
 	"log"
+
 	"vpn-dns/internal/app"
 
 	"github.com/sevlyar/go-daemon"
@@ -38,7 +35,8 @@ var startCmd = &cobra.Command{
 		if d != nil {
 			return
 		}
-		defer cntxt.Release()
+
+		defer cntxt.Release() //nolint:errcheck
 
 		log.Print("- - - - - - - - - - - - - - -")
 		log.Print("Daemon is started")
