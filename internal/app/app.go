@@ -1,11 +1,13 @@
 package app
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
 	"syscall"
 
+	"vpn-dns/pkg/config"
 	"vpn-dns/pkg/network"
 	"vpn-dns/pkg/vpn"
 )
@@ -17,14 +19,14 @@ const (
 
 type App struct {
 	pid    int
-	config Config
+	config config.Config
 }
 
 func (a *App) Run() {
 	iface := network.Interface{
 		Name: a.config.Interface,
 	}
-	vpns := a.config.GetVPNs()
+	vpns := a.config.VPNs.GetNames()
 	watcher := vpn.NewWatcher(vpns)
 	defer watcher.Close()
 	for {
@@ -40,9 +42,12 @@ func (a *App) Run() {
 					log.Println("Error while setting fallback DNS")
 				}
 			} else {
-				servers := a.config.GetServers(active)
+				servers, err := a.config.GetServers(active)
+				if err != nil {
+					log.Println("Can't read servers")
+				}
 				log.Println("Setting custom servers:", servers)
-				err := iface.SetDNS(servers)
+				err = iface.SetDNS(servers)
 				if err != nil {
 					log.Println("Error while setting custom DNS")
 				}
@@ -68,6 +73,9 @@ func (a *App) Running() bool {
 	return err == nil
 }
 
+// ErrDaemonNotRunning is returned when an inactive process is tried to perform an action.
+var ErrDaemonNotRunning = errors.New("daemon is not running")
+
 func (a *App) Kill() error {
 	if a.pid == 0 {
 		return ErrDaemonNotRunning
@@ -76,7 +84,7 @@ func (a *App) Kill() error {
 }
 
 func Create(configPath string) App {
-	config, err := readConfig(configPath)
+	config, err := config.Read(configPath)
 	if err != nil {
 		fmt.Println("Error while reading config:", err.Error())
 	}
