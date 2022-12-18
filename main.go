@@ -1,6 +1,8 @@
 package main
 
-import "vpn-dns/cmd"
+import (
+	"vpn-dns/cmd"
+)
 
 func main() {
 	cmd.Execute()

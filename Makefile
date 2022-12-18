@@ -1,6 +1,8 @@
 .PHONY: clear run lint
 
-GC = go build -ldflags="-s -w"
+VERSION = 0.0.2
+
+GC = go build -ldflags="-X 'vpn-dns/cmd.Version=v$(VERSION)' -s -w"
 ENTRYFILE = main.go
 
 BUILD_DIR = build
