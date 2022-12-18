@@ -11,7 +11,7 @@ type Interface struct {
 	Name string
 }
 
-// SetDNS sets interface domain name servers
+// SetDNS sets interface domain name servers.
 func (n *Interface) SetDNS(servers []string) (err error) {
 	var stdout bytes.Buffer
 	var stderr bytes.Buffer
