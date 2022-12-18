@@ -1,4 +1,4 @@
-.PHONY: clear run
+.PHONY: clear run lint
 
 GC = go build -ldflags="-s -w"
 ENTRYFILE = main.go
@@ -38,3 +38,6 @@ run:
 
 clear:
 	rm -rf "$(BUILD_DIR)"
+
+lint:
+	golangci-lint run -E lll -E misspell -E prealloc -E stylecheck -E gocritic
