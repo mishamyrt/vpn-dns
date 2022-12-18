@@ -13,13 +13,13 @@ var stopCmd = &cobra.Command{
 	Use:   "stop",
 	Short: "Stops the background application",
 	Run: func(cmd *cobra.Command, args []string) {
-		// if process.IsRunning() {
-		// 	process.Kill()
-		// 	fmt.Println("Daemon is stopped")
-		// } else {
-		// 	fmt.Println("Daemon is not running")
-		// }
-
+		process := app.Create(configPath)
+		if process.Running() {
+			process.Kill()
+			fmt.Println("Daemon is stopped")
+		} else {
+			fmt.Println("Daemon is not running")
+		}
 	},
 }
 
