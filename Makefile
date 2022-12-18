@@ -1,4 +1,4 @@
-.PHONY: clear run lint
+.PHONY: clear run lint release
 
 VERSION = 0.0.2
 
@@ -32,6 +32,10 @@ $(DARWIN_ARM64): $(GOSRC)
 
 $(DARWIN_AMD64): $(GOSRC)
 	$(call build_binary,$(DARWIN_AMD64),darwin,amd64)
+
+release:
+	git tag "v$(VERSION)"
+	git push --tags
 
 build: all
 
