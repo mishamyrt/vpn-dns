@@ -25,11 +25,11 @@ var autostartCmd = &cobra.Command{
 		switch len(args) {
 		case 0:
 			if isSet {
-				fmt.Println("Autostart is not enabled.")
-				fmt.Println("To enable, run: vpn-dns autostart enable")
-			} else {
 				fmt.Println("Autostart is enabled.")
 				fmt.Println("To disable, run: vpn-dns autostart disable")
+			} else {
+				fmt.Println("Autostart is not enabled.")
+				fmt.Println("To enable, run: vpn-dns autostart enable")
 			}
 		case 1:
 			switch args[0] {
