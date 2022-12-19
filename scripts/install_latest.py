@@ -42,7 +42,7 @@ def install():
     urlretrieve(binary_asset["browser_download_url"], "./vpn-dns")
     print("Installing to system")
     system(f"chmod +x {LOCAL_PATH}")
-    system(f"sudo cp -f {LOCAL_PATH} {SYSTEM_PATH}")
+    system(fr"sudo \cp -f {LOCAL_PATH} {SYSTEM_PATH}")
     print("Done")
 
 install()
