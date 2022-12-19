@@ -31,7 +31,7 @@ func init() {
 		panic(err)
 	}
 	defaultPath := userDir + "/.config/vpn-dns/config.yaml"
-	rootCmd.Flags().StringVarP(
+	rootCmd.PersistentFlags().StringVarP(
 		&configPath,
 		"config", "c",
 		defaultPath,

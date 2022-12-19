@@ -47,3 +47,17 @@ Additionally, you can pass the path to the configuration file in the `--config` 
 ```sh
 vpn-dns --config myconfig.yaml start
 ```
+
+### Automatic startup
+
+To start the application automatically at system startup, run the command:
+
+```sh
+vpn-dns autostart enable
+```
+
+To disable, run the command:
+
+```sh
+vpn-dns autostart disable
+```
