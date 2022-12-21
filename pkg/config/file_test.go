@@ -16,7 +16,7 @@ func assertFileNotExists(t *testing.T, err error) {
 	t.Helper()
 	if err == nil {
 		t.Errorf("Expected ErrFileNotExists, got nil")
-	} else if errors.Is(err, config.ErrFileNotExists) {
+	} else if !errors.Is(err, config.ErrFileNotExists) {
 		t.Errorf("Unexpected error value: %v", err.Error())
 	}
 }

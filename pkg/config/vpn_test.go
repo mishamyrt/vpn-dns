@@ -25,7 +25,7 @@ func TestServers(t *testing.T) {
 	_, err := MockVPNs.GetServers("not_existing")
 	if err == nil {
 		t.Errorf("Unexpected nil")
-	} else if errors.Is(err, config.ErrNameNotFound) {
+	} else if !errors.Is(err, config.ErrNameNotFound) {
 		t.Errorf("Unexpected error: %s", err.Error())
 	}
 
