@@ -4,8 +4,8 @@ import (
 	"errors"
 )
 
-// ErrNotFound returns when VPN is not found in configuration.
-var ErrNotFound = errors.New("VPN with given name is not found")
+// ErrNameNotFound returns when VPN is not found in configuration.
+var ErrNameNotFound = errors.New("VPN with given name is not found")
 
 // VPNs represents names to servers mapping.
 type VPNs map[string][]string
@@ -15,7 +15,7 @@ func (v *VPNs) GetServers(name string) ([]string, error) {
 	if servers, found := map[string][]string(*v)[name]; found {
 		return servers, nil
 	}
-	return []string{}, ErrNotFound
+	return []string{}, ErrNameNotFound
 }
 
 // GetNames returns all VPN names in configuration.

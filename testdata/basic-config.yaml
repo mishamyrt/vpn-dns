@@ -1,0 +1,8 @@
+---
+interface: Wi-Fi
+VPNs:
+  - name: VPN
+    servers:
+      - 10.129.144.6
+fallback_servers:
+  - 1.1.1.1

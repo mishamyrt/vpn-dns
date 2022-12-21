@@ -1,4 +1,4 @@
-.PHONY: clear run lint release
+.PHONY: clear run lint release test
 
 VERSION = 0.0.5
 
@@ -32,6 +32,12 @@ $(DARWIN_ARM64): $(GOSRC)
 
 $(DARWIN_AMD64): $(GOSRC)
 	$(call build_binary,$(DARWIN_AMD64),darwin,amd64)
+
+test:
+	go test ./...
+
+coverage:
+	go test -cover ./...
 
 release:
 	git tag "v$(VERSION)"

@@ -20,15 +20,6 @@ type File struct {
 	FallbackServers []string   `yaml:"fallback_servers"`
 }
 
-// Exists checks if file is exists.
-func Exists(filename string) bool {
-	info, err := os.Stat(filename)
-	if os.IsNotExist(err) {
-		return false
-	}
-	return !info.IsDir()
-}
-
 // ErrFileNotExists is returned when requested file doesn't exists.
 var ErrFileNotExists = errors.New("configuration file doesn't exist")
 
@@ -36,7 +27,7 @@ var ErrFileNotExists = errors.New("configuration file doesn't exist")
 func Read(path string) (Config, error) {
 	var configFile File
 	var config Config
-	if !Exists(path) {
+	if !fileExists(path) {
 		return config, ErrFileNotExists
 	}
 	data, err := os.ReadFile(path)
@@ -54,4 +45,12 @@ func Read(path string) (Config, error) {
 		config.VPNs[entry.Name] = entry.Servers
 	}
 	return config, nil
+}
+
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }
