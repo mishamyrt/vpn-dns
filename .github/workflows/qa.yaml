@@ -30,3 +30,14 @@ jobs:
         uses: actions/checkout@v3
       - name: Test
         run: make coverage
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-go@v3
+        with:
+          go-version: 1.17
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Test
+        run: make build
