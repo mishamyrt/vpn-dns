@@ -7,7 +7,7 @@ import (
 
 type Item struct {
 	PackageName string
-	Command     string
+	Command     []string
 	path        string
 }
 
@@ -39,8 +39,7 @@ func (it *Item) Render() string {
 	list := NewPropList()
 	list.Bool("KeepAlive", false)
 	list.String("Label", it.PackageName)
-	command := strings.Split(it.Command, " ")
-	list.StringArray("ProgramArguments", command)
+	list.StringArray("ProgramArguments", it.Command)
 	list.Bool("RunAtLoad", true)
 	list.String("StandardErrorPath", "/dev/null")
 	list.String("StandardOutPath", "/dev/null")
@@ -50,6 +49,7 @@ func (it *Item) Render() string {
 func NewItem(name string, command string, path string) Item {
 	item := Item{
 		PackageName: name,
+		Command:     strings.Split(command, " "),
 		path:        path,
 	}
 	return item
