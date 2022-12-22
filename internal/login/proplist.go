@@ -2,48 +2,47 @@ package login
 
 import "strings"
 
-var XMLHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-
-var specURL = "http://www.apple.com/DTDs/PropertyList-1.0.dtd"
-var TypePropList = "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"" + specURL + "\">"
+const xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+const specURL = "http://www.apple.com/DTDs/PropertyList-1.0.dtd"
+const typePropList = "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"" + specURL + "\">"
 
 type PropList struct {
 	props []string
 }
 
-func (d *PropList) append(value string) {
+func (d *PropList) appendRaw(value string) {
 	d.props = append(d.props, value)
 }
 
-func (d *PropList) appendWrapped(tag, value string) {
-	d.append("<" + tag + ">" + value + "</" + tag + ">")
+func (d *PropList) append(tag, value string) {
+	d.appendRaw("<" + tag + ">" + value + "</" + tag + ">")
 }
 
 func (d *PropList) Bool(key string, value bool) {
-	d.append("<key>" + key + "</key>")
+	d.appendRaw("<key>" + key + "</key>")
 	if value {
-		d.append("<true/>")
+		d.appendRaw("<true/>")
 	} else {
-		d.append("<false/>")
+		d.appendRaw("<false/>")
 	}
 }
 
 func (d *PropList) String(key string, value string) {
-	d.appendWrapped("key", key)
-	d.appendWrapped("string", value)
+	d.append("key", key)
+	d.append("string", value)
 }
 
 func (d *PropList) StringArray(key string, values []string) {
-	d.appendWrapped("key", key)
-	d.append("<array>")
+	d.append("key", key)
+	d.appendRaw("<array>")
 	for _, value := range values {
-		d.appendWrapped("string", value)
+		d.append("string", value)
 	}
-	d.append("</array>")
+	d.appendRaw("</array>")
 }
 
 func (d *PropList) Join() string {
-	result := XMLHeader + "\n" + TypePropList + "\n"
+	result := xmlHeader + "\n" + typePropList + "\n"
 	result += "<plist version=\"1.0\">" + "\n"
 	result += "<dict>" + "\n"
 	result += strings.Join(d.props, "\n") + "\n"
