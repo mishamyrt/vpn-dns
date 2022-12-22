@@ -27,7 +27,7 @@ func (it *Item) Remove() error {
 }
 
 func (it *Item) Write() error {
-	content := it.Render()
+	content := it.render()
 	err := os.WriteFile(it.path, []byte(content), 0644) //nolint:gomnd
 	if err != nil {
 		return err
@@ -35,7 +35,7 @@ func (it *Item) Write() error {
 	return nil
 }
 
-func (it *Item) Render() string {
+func (it *Item) render() string {
 	list := NewPropList()
 	list.Bool("KeepAlive", false)
 	list.String("Label", it.PackageName)
