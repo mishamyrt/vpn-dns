@@ -1,4 +1,4 @@
-.PHONY: clear run lint release test
+.PHONY: clear run lint release test install
 
 VERSION = 0.0.5
 
@@ -43,7 +43,7 @@ release:
 	git tag "v$(VERSION)"
 	git push --tags
 
-build: all
+build:
 
 run:
 	go run "$(ENTRYFILE)"
@@ -53,3 +53,6 @@ clear:
 
 lint:
 	golangci-lint run -E lll -E misspell -E prealloc -E stylecheck -E gocritic
+
+install: build
+	cp -f build/vpn-dns_arm64 /usr/local/bin/vpn-dns
