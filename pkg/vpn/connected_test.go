@@ -30,7 +30,7 @@ func assertError(t *testing.T) {
 	m := exec.Mock{}
 	m.Stderr.WriteString("Bla bla bla, some error")
 	_, err := vpn.IsConnected(connectionName, m.Run)
-	if errors.Is(err, vpn.ErrCommandFailed) {
+	if !errors.Is(err, vpn.ErrCommandFailed) {
 		t.Errorf("Unexpected error: %v", err)
 	}
 }
