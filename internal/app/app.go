@@ -8,6 +8,7 @@ import (
 	"syscall"
 
 	"vpn-dns/pkg/config"
+	"vpn-dns/pkg/exec"
 	"vpn-dns/pkg/network"
 	"vpn-dns/pkg/vpn"
 )
@@ -27,7 +28,7 @@ func (a *App) Run() {
 		Name: a.config.Interface,
 	}
 	vpns := a.config.VPNs.GetNames()
-	watcher := vpn.NewWatcher(vpns)
+	watcher := vpn.NewWatcher(vpns, exec.Run)
 	defer watcher.Close()
 	for {
 		select {

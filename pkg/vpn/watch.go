@@ -1,6 +1,9 @@
 package vpn
 
-import "time"
+import (
+	"time"
+	"vpn-dns/pkg/exec"
+)
 
 // CloseCheckInterval means the time that passes between activity checks.
 var CloseCheckInterval = 100 * time.Millisecond
@@ -9,36 +12,44 @@ var CloseCheckInterval = 100 * time.Millisecond
 var ConnectionCheckInterval = 500 * time.Millisecond
 
 type Watcher struct {
-	Names       []string
-	Updates     chan []string
-	Errors      chan error
-	shouldClose bool
-	closed      bool
-	inited      bool
+	Names    []string
+	Updates  chan []string
+	Errors   chan error
+	_execute exec.CommandRunner
+	_closing bool
+	_closed  bool
+	_inited  bool
 }
 
 func (w *Watcher) Close() {
-	w.shouldClose = true
+	w._closing = true
 	for {
-		if w.closed {
+		if w._closed {
 			break
 		}
 		time.Sleep(CloseCheckInterval)
 	}
 	close(w.Updates)
 	close(w.Errors)
-	w.closed = true
 }
 
-func (w *Watcher) run(names []string) {
-	statuses := make([]bool, len(names))
+func (w *Watcher) Run() {
+	go w.start()
+}
+
+func (w *Watcher) start() {
+	statuses := make([]bool, len(w.Names))
 	var hasChanges bool
 	var active []string
 	for {
+		if w._closing {
+			w._closed = true
+			return
+		}
 		hasChanges = false
 		active = make([]string, 0)
-		for i := range names { //nolint:varnamelen
-			status, err := IsConnected(names[i])
+		for i := range w.Names { //nolint:varnamelen
+			status, err := IsConnected(w.Names[i], w._execute)
 			if err != nil {
 				w.Errors <- err
 				break
@@ -47,24 +58,24 @@ func (w *Watcher) run(names []string) {
 				hasChanges = true
 				statuses[i] = status
 				if status {
-					active = append(active, names[i])
+					active = append(active, w.Names[i])
 				}
 			}
 		}
-		if hasChanges || !w.inited {
-			w.inited = true
+		if hasChanges || !w._inited {
+			w._inited = true
 			w.Updates <- active
 		}
 		time.Sleep(ConnectionCheckInterval)
 	}
 }
 
-func NewWatcher(names []string) Watcher {
+func NewWatcher(names []string, execute exec.CommandRunner) Watcher {
 	watcher := Watcher{
-		Updates: make(chan []string),
-		Errors:  make(chan error),
-		inited:  false,
+		Updates:  make(chan []string),
+		Errors:   make(chan error),
+		_inited:  false,
+		_execute: execute,
 	}
-	go watcher.run(names)
 	return watcher
 }
