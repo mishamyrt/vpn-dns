@@ -14,9 +14,14 @@ var autostartCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		packageName := "co.myrt.vpndns"
 		binPath := "/usr/local/bin/vpn-dns"
-		item, err := login.NewItem(
+		itemPath, err := login.LaunchAgentPath(packageName)
+		if err != nil {
+			panic(err)
+		}
+		item := login.NewItem(
 			packageName,
 			binPath+" -c "+configPath+" start",
+			itemPath,
 		)
 		if err != nil {
 			return

@@ -47,15 +47,18 @@ func (it *Item) Render() string {
 	return list.Join()
 }
 
-func NewItem(name string, command string) (Item, error) {
+func NewItem(name string, command string, path string) Item {
 	item := Item{
 		PackageName: name,
-		Command:     command,
+		path:        path,
 	}
+	return item
+}
+
+func LaunchAgentPath(name string) (string, error) {
 	userDir, err := os.UserHomeDir()
 	if err != nil {
-		return item, err
+		return "", err
 	}
-	item.path = userDir + "/Library/LaunchAgents/" + name + ".plist"
-	return item, nil
+	return userDir + "/Library/LaunchAgents/" + name + ".plist", nil
 }
