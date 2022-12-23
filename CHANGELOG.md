@@ -9,7 +9,10 @@ and this project adheres to [Semantic Versioning][].
 
 ### Added
 
-* Some tests
+* Tests🔥:
+    * `internal/login`
+    * `pkg/config`
+    * `pkg/vpn`
 * `autostart` command verbosity
 * Changelog
 
