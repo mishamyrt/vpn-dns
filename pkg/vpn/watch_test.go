@@ -15,28 +15,22 @@ func TestWatch(t *testing.T) {
 	watcher.ConnectionCheckInterval = 10 * time.Millisecond
 	watcher.Run()
 	updatesCount := 0
-	for {
-		select {
-		case active, ok := <-watcher.Updates:
-			updatesCount++
-			if !ok {
-				return
+	for active := range watcher.Updates {
+		updatesCount++
+		switch len(active) {
+		case 0:
+			if updatesCount != 1 {
+				t.Errorf("Got empty, expected value")
 			}
-			switch len(active) {
-			case 0:
-				if updatesCount != 1 {
-					t.Errorf("Got empty, expected value")
-				}
-				mock.Clear()
-				mock.Stdout.WriteString(outConnected)
-			case 2:
-				if updatesCount != 2 {
-					t.Errorf("Got values, expected to be empty")
-				}
-				watcher.Close()
-			default:
-				t.Errorf("Got unexpected value %v", "")
+			mock.Clear()
+			mock.Stdout.WriteString(outConnected)
+		case 2:
+			if updatesCount != 2 {
+				t.Errorf("Got values, expected to be empty")
 			}
+			watcher.Close()
+		default:
+			t.Errorf("Got unexpected value %v", "")
 		}
 	}
 }

@@ -75,7 +75,7 @@ func NewWatcher(names []string, execute exec.CommandRunner) Watcher {
 		Updates:                 make(chan []string),
 		Errors:                  make(chan error),
 		ConnectionCheckInterval: ConnectionCheckInterval,
-		CloseCheckInterval:      ConnectionCheckInterval / 5,
+		CloseCheckInterval:      ConnectionCheckInterval,
 		_inited:                 false,
 		_execute:                execute,
 	}
