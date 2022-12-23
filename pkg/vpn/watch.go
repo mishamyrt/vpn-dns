@@ -5,9 +5,6 @@ import (
 	"vpn-dns/pkg/exec"
 )
 
-// CloseCheckInterval means the time that passes between activity checks.
-var CloseCheckInterval = 100 * time.Millisecond
-
 // ConnectionCheckInterval means the time that passes between connection checks.
 var ConnectionCheckInterval = 500 * time.Millisecond
 
@@ -74,10 +71,11 @@ func (w *Watcher) start() {
 
 func NewWatcher(names []string, execute exec.CommandRunner) Watcher {
 	watcher := Watcher{
+		Names:                   names,
 		Updates:                 make(chan []string),
 		Errors:                  make(chan error),
-		CloseCheckInterval:      CloseCheckInterval,
 		ConnectionCheckInterval: ConnectionCheckInterval,
+		CloseCheckInterval:      ConnectionCheckInterval / 5,
 		_inited:                 false,
 		_execute:                execute,
 	}
