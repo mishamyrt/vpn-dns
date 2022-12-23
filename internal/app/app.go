@@ -29,6 +29,7 @@ func (a *App) Run() {
 	}
 	vpns := a.config.VPNs.GetNames()
 	watcher := vpn.NewWatcher(vpns, exec.Run)
+	watcher.Run()
 	defer watcher.Close()
 	for {
 		select {
