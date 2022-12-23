@@ -29,8 +29,7 @@ func (m *Mock) Run(name string, args ...string) (string, string, error) {
 	return m.Stdout.String(), m.Stderr.String(), nil
 }
 
-func (m *Mock) Clear(name string, args ...string) (string, string, error) {
+func (m *Mock) Clear() {
 	m.Stdout.Reset()
 	m.Stderr.Reset()
-	return m.Stdout.String(), m.Stderr.String(), nil
 }
