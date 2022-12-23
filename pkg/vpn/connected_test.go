@@ -8,6 +8,8 @@ import (
 )
 
 const connectionName = "connection_name"
+const outConnected = "Connected\n"
+const outDisconnected = "Disconnected\n"
 
 func assertConnected(t *testing.T, expected bool, output string) {
 	t.Helper()
@@ -37,7 +39,7 @@ func assertError(t *testing.T) {
 
 func TestIsConnected(t *testing.T) {
 	t.Parallel()
-	assertConnected(t, true, "Connected\n")
-	assertConnected(t, false, "Disconnected\n")
+	assertConnected(t, true, outConnected)
+	assertConnected(t, false, outDisconnected)
 	assertError(t)
 }
