@@ -12,13 +12,15 @@ var CloseCheckInterval = 100 * time.Millisecond
 var ConnectionCheckInterval = 500 * time.Millisecond
 
 type Watcher struct {
-	Names    []string
-	Updates  chan []string
-	Errors   chan error
-	_execute exec.CommandRunner
-	_closing bool
-	_closed  bool
-	_inited  bool
+	Names                   []string
+	Updates                 chan []string
+	Errors                  chan error
+	CloseCheckInterval      time.Duration
+	ConnectionCheckInterval time.Duration
+	_execute                exec.CommandRunner
+	_closing                bool
+	_closed                 bool
+	_inited                 bool
 }
 
 func (w *Watcher) Close() {
@@ -27,7 +29,7 @@ func (w *Watcher) Close() {
 		if w._closed {
 			break
 		}
-		time.Sleep(CloseCheckInterval)
+		time.Sleep(w.CloseCheckInterval)
 	}
 	close(w.Updates)
 	close(w.Errors)
@@ -66,16 +68,18 @@ func (w *Watcher) start() {
 			w._inited = true
 			w.Updates <- active
 		}
-		time.Sleep(ConnectionCheckInterval)
+		time.Sleep(w.ConnectionCheckInterval)
 	}
 }
 
 func NewWatcher(names []string, execute exec.CommandRunner) Watcher {
 	watcher := Watcher{
-		Updates:  make(chan []string),
-		Errors:   make(chan error),
-		_inited:  false,
-		_execute: execute,
+		Updates:                 make(chan []string),
+		Errors:                  make(chan error),
+		CloseCheckInterval:      CloseCheckInterval,
+		ConnectionCheckInterval: ConnectionCheckInterval,
+		_inited:                 false,
+		_execute:                execute,
 	}
 	return watcher
 }
