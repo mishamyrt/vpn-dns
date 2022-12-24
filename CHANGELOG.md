@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning][].
     * `internal/login`
     * `pkg/config`
     * `pkg/vpn`
+    * `pkg/exec`
 * `autostart` command verbosity
 * Changelog
 
