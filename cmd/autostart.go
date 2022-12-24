@@ -9,15 +9,14 @@ import (
 )
 
 func createLoginItem() login.Item {
-	const packageName = "co.myrt.vpndns"
-	const binPath = "/usr/local/bin/vpn-dns"
-	itemPath, err := login.LaunchAgentPath(packageName)
+	const binPath = "/usr/local/bin/" + AppName
+	itemPath, err := login.LaunchAgentPath(PackageName)
 	if err != nil {
 		fmt.Println("Can't initialize app:", err.Error())
 		os.Exit(1)
 	}
 	item := login.NewItem(
-		packageName,
+		PackageName,
 		binPath+" -c "+configPath+" start",
 		itemPath,
 	)

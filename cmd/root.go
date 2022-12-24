@@ -13,6 +13,9 @@ import (
 // AppName represents app name.
 const AppName = "vpn-dns"
 
+// PackageName represents app package name.
+const PackageName = "co.myrt.vpndns"
+
 // Version represents current app version.
 var Version = "development"
 
@@ -37,7 +40,7 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	defaultPath := userDir + "/.config/vpn-dns/config.yaml"
+	defaultPath := userDir + "/.config/" + AppName + "/config.yaml"
 	rootCmd.PersistentFlags().StringVarP(
 		&configPath,
 		"config", "c",
