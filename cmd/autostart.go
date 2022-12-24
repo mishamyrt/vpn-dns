@@ -2,62 +2,84 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"vpn-dns/pkg/login"
 
 	"github.com/spf13/cobra"
 )
+
+func createLoginItem() login.Item {
+	const packageName = "co.myrt.vpndns"
+	const binPath = "/usr/local/bin/vpn-dns"
+	itemPath, err := login.LaunchAgentPath(packageName)
+	if err != nil {
+		fmt.Println("Can't initialize app:", err.Error())
+		os.Exit(1)
+	}
+	item := login.NewItem(
+		packageName,
+		binPath+" -c "+configPath+" start",
+		itemPath,
+	)
+	return item
+}
+
+// autostartEnableCmd represents the `autostart enable` command.
+var autostartEnableCmd = &cobra.Command{
+	Use:   "enable",
+	Short: "Enables automatic startup",
+	Run: func(cmd *cobra.Command, args []string) {
+		item := createLoginItem()
+		err := item.Write()
+		if item.IsSet() {
+			fmt.Println("Autostart is already enabled.")
+			os.Exit(1)
+		}
+		if err != nil {
+			fmt.Println("Can't write login item:", err.Error())
+			os.Exit(1)
+		}
+		fmt.Println("Autostart is enabled.")
+	},
+}
+
+// autostartDisableCmd represents the `autostart disable` command.
+var autostartDisableCmd = &cobra.Command{
+	Use:   "disable",
+	Short: "Disables automatic startup",
+	Run: func(cmd *cobra.Command, args []string) {
+		item := createLoginItem()
+		if !item.IsSet() {
+			fmt.Println("Autostart is not enabled.")
+			os.Exit(1)
+		}
+		err := item.Remove()
+		if err != nil {
+			fmt.Println("Can't remove login item:", err.Error())
+			os.Exit(1)
+		}
+		fmt.Println("Autostart is disabled.")
+	},
+}
 
 // autostartCmd represents the autostart command.
 var autostartCmd = &cobra.Command{
 	Use:   "autostart",
 	Short: "Enables or disables automatic startup",
 	Run: func(cmd *cobra.Command, args []string) {
-		packageName := "co.myrt.vpndns"
-		binPath := "/usr/local/bin/vpn-dns"
-		itemPath, err := login.LaunchAgentPath(packageName)
-		if err != nil {
-			panic(err)
-		}
-		item := login.NewItem(
-			packageName,
-			binPath+" -c "+configPath+" start",
-			itemPath,
-		)
-		if err != nil {
-			return
-		}
-		isSet := item.IsSet()
-		switch len(args) {
-		case 0:
-			if isSet {
-				fmt.Println("Autostart is enabled.")
-				fmt.Println("To disable, run: vpn-dns autostart disable")
-			} else {
-				fmt.Println("Autostart is not enabled.")
-				fmt.Println("To enable, run: vpn-dns autostart enable")
-			}
-		case 1:
-			switch args[0] {
-			case "enable":
-				err = item.Write()
-				fmt.Println("Autostart is enabled")
-			case "disable":
-				if isSet {
-					err = item.Remove()
-				}
-				fmt.Println("Autostart is disabled")
-			default:
-				fmt.Println("Unknown command.")
-			}
-		default:
-			fmt.Println("Unknown command.")
-		}
-		if err != nil {
-			fmt.Println("Something went wrong:", err.Error())
+		item := createLoginItem()
+		if item.IsSet() {
+			fmt.Println("Autostart is enabled.")
+			fmt.Println("To disable, run: vpn-dns autostart disable")
+		} else {
+			fmt.Println("Autostart is not enabled.")
+			fmt.Println("To enable, run: vpn-dns autostart enable")
 		}
 	},
 }
 
 func init() {
+	autostartCmd.AddCommand(autostartEnableCmd)
+	autostartCmd.AddCommand(autostartDisableCmd)
 	rootCmd.AddCommand(autostartCmd)
 }
