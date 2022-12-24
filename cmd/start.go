@@ -2,11 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"log"
+	"os"
 
-	"vpn-dns/internal/app"
-
-	"github.com/sevlyar/go-daemon"
 	"github.com/spf13/cobra"
 )
 
@@ -15,32 +12,13 @@ var startCmd = &cobra.Command{
 	Use:   "start",
 	Short: "Starts the application in the background",
 	Run: func(cmd *cobra.Command, args []string) {
-		process := app.Create(configPath)
-		if process.Running() {
+		changer, daemon := createApp()
+		if daemon.Running() {
 			fmt.Println("Application is already running in background")
-			return
+			os.Exit(1)
 		}
-		cntxt := &daemon.Context{
-			PidFileName: app.PidPath,
-			PidFilePerm: 0644, //nolint:gomnd
-			LogFileName: app.LogPath,
-			LogFilePerm: 0640, //nolint:gomnd
-			WorkDir:     "./",
-		}
-
-		d, err := cntxt.Reborn()
-		if err != nil {
-			log.Fatal("Unable to run: ", err)
-		}
-		if d != nil {
-			return
-		}
-
-		defer cntxt.Release() //nolint:errcheck
-
-		log.Print("- - - - - - - - - - - - - - -")
-		log.Print("Daemon is started")
-		process.Run()
+		daemon.Start()
+		changer.Run()
 	},
 }
 

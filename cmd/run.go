@@ -2,8 +2,7 @@ package cmd
 
 import (
 	"fmt"
-
-	"vpn-dns/internal/app"
+	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -13,12 +12,12 @@ var runCmd = &cobra.Command{
 	Use:   "run",
 	Short: "Runs the application in the current process",
 	Run: func(cmd *cobra.Command, args []string) {
-		process := app.Create(configPath)
-		if process.Running() {
+		changer, daemon := createApp()
+		if daemon.Running() {
 			fmt.Println("Application is running in background. Stop it, before run")
-			return
+			os.Exit(1)
 		}
-		process.Run()
+		changer.Run()
 	},
 }
 

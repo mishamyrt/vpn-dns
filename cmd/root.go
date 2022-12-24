@@ -1,17 +1,24 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
+	"vpn-dns/internal/vpndns"
+	"vpn-dns/pkg/exec"
+	"vpn-dns/pkg/process"
 
 	"github.com/spf13/cobra"
 )
+
+// AppName represents app name.
+const AppName = "vpn-dns"
 
 // Version represents current app version.
 var Version = "development"
 
 // rootCmd represents the base command when called without any subcommands.
 var rootCmd = &cobra.Command{
-	Use:     "vpn-dns",
+	Use:     AppName,
 	Version: Version,
 	Short:   "An app that fixes macOS DNS behavior when using a VPN",
 }
@@ -36,4 +43,14 @@ func init() {
 		"config", "c",
 		defaultPath,
 		"Configuration file path")
+}
+
+func createApp() (vpndns.Changer, process.Daemon) {
+	app, err := vpndns.NewChanger(configPath, exec.Run)
+	if err != nil {
+		fmt.Println("Can't initialize app:", err.Error())
+		os.Exit(1)
+	}
+	daemon := process.NewDaemon(AppName)
+	return app, daemon
 }
