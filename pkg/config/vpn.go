@@ -1,11 +1,8 @@
 package config
 
 import (
-	"errors"
+	"os"
 )
-
-// ErrNameNotFound returns when VPN is not found in configuration.
-var ErrNameNotFound = errors.New("VPN with given name is not found")
 
 // VPNs represents names to servers mapping.
 type VPNs map[string][]string
@@ -15,7 +12,7 @@ func (v *VPNs) GetServers(name string) ([]string, error) {
 	if servers, found := map[string][]string(*v)[name]; found {
 		return servers, nil
 	}
-	return []string{}, ErrNameNotFound
+	return []string{}, os.ErrNotExist
 }
 
 // GetNames returns all VPN names in configuration.

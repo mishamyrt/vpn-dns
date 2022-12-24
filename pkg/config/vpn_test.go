@@ -2,6 +2,7 @@ package config_test
 
 import (
 	"errors"
+	"os"
 	"testing"
 	"vpn-dns/pkg/config"
 )
@@ -25,7 +26,7 @@ func TestServers(t *testing.T) {
 	_, err := MockVPNs.GetServers("not_existing")
 	if err == nil {
 		t.Errorf("Unexpected nil")
-	} else if !errors.Is(err, config.ErrNameNotFound) {
+	} else if !errors.Is(err, os.ErrNotExist) {
 		t.Errorf("Unexpected error: %s", err.Error())
 	}
 

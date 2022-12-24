@@ -1,7 +1,6 @@
 package config
 
 import (
-	"errors"
 	"os"
 
 	"gopkg.in/yaml.v3"
@@ -20,15 +19,12 @@ type File struct {
 	FallbackServers []string   `yaml:"fallback_servers"`
 }
 
-// ErrFileNotExists is returned when requested file doesn't exists.
-var ErrFileNotExists = errors.New("configuration file doesn't exist")
-
 // Read configuration file.
 func Read(path string) (Config, error) {
 	var configFile File
 	var config Config
 	if !fileExists(path) {
-		return config, ErrFileNotExists
+		return config, os.ErrNotExist
 	}
 	data, err := os.ReadFile(path)
 	if err != nil {
