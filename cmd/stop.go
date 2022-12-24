@@ -17,10 +17,10 @@ var stopCmd = &cobra.Command{
 			if err != nil {
 				fmt.Println("Error while stopping:", err.Error())
 			} else {
-				fmt.Println("Daemon is stopped")
+				fmt.Println("Daemon is stopped.")
 			}
 		} else {
-			fmt.Println("Daemon is not running")
+			fmt.Println("Daemon is not running.")
 		}
 	},
 }

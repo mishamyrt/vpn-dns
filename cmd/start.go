@@ -14,7 +14,7 @@ var startCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		app, daemon := createApp()
 		if daemon.Running() {
-			fmt.Println("Application is already running in background")
+			fmt.Println("Application is already running in background.")
 			os.Exit(1)
 		}
 		child, err := daemon.Context.Reborn()
@@ -25,7 +25,7 @@ var startCmd = &cobra.Command{
 			defer daemon.Context.Release() //nolint:errcheck
 			app.Run()
 		} else {
-			fmt.Println("Daemon is started")
+			fmt.Println("Daemon is started.")
 		}
 	},
 }
