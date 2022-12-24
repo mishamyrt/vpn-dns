@@ -34,10 +34,12 @@ $(DARWIN_AMD64): $(GOSRC)
 	$(call build_binary,$(DARWIN_AMD64),darwin,amd64)
 
 test:
-	go test ./...
+	go test -cover ./...
 
 coverage:
-	go test -cover ./...
+	go test -coverprofile=coverage.out ./...
+	go tool cover -html=coverage.out
+	rm coverage.out
 
 release:
 	git tag "v$(VERSION)"
