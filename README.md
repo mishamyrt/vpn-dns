@@ -1,4 +1,4 @@
-# VPN DNS [![Quality assurance](https://github.com/mishamyrt/vpn-dns/actions/workflows/qa.yaml/badge.svg)](https://github.com/mishamyrt/vpn-dns/actions/workflows/qa.yaml)
+# VPN DNS [![Quality assurance](https://github.com/mishamyrt/vpn-dns/actions/workflows/qa.yaml/badge.svg)](https://github.com/mishamyrt/vpn-dns/actions/workflows/qa.yaml) [![Maintainability](https://api.codeclimate.com/v1/badges/0feb5c97955ba991b140/maintainability)](https://codeclimate.com/github/mishamyrt/vpn-dns/maintainability)
 
 The service that changes DNS servers when connecting to a VPN. Solves connection problems on macOS.
 
