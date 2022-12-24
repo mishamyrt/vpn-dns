@@ -1,7 +1,7 @@
 ---
 interface: Wi-Fi
 VPNs:
-  - name: VPN
+  - name: AkBarsDigital
     servers:
       - 10.129.144.6
 fallback_servers:

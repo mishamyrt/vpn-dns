@@ -64,7 +64,7 @@ var autostartDisableCmd = &cobra.Command{
 // autostartCmd represents the autostart command.
 var autostartCmd = &cobra.Command{
 	Use:   "autostart",
-	Short: "Enables or disables automatic startup",
+	Short: "Controls the automatic start-up of the application",
 	Run: func(cmd *cobra.Command, args []string) {
 		item := createLoginItem()
 		if item.IsSet() {

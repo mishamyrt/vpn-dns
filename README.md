@@ -1,6 +1,6 @@
-# VPN DNS [![Quality assurance](https://github.com/mishamyrt/vpn-dns/actions/workflows/qa.yaml/badge.svg)](https://github.com/mishamyrt/vpn-dns/actions/workflows/qa.yaml) [![Maintainability](https://api.codeclimate.com/v1/badges/0feb5c97955ba991b140/maintainability)](https://codeclimate.com/github/mishamyrt/vpn-dns/maintainability)
+# VPN DNS Changer [![Quality assurance](https://github.com/mishamyrt/vpn-dns/actions/workflows/qa.yaml/badge.svg)](https://github.com/mishamyrt/vpn-dns/actions/workflows/qa.yaml) [![Maintainability](https://api.codeclimate.com/v1/badges/0feb5c97955ba991b140/maintainability)](https://codeclimate.com/github/mishamyrt/vpn-dns/maintainability)
 
-The service that changes DNS servers when connecting to a VPN. Solves connection problems on macOS.
+The service that changes DNS settings when connecting to a VPN. Solves some problems on macOS Ventura.
 
 ## Installing
 
@@ -10,9 +10,7 @@ To install automatically, run the command.
 curl -s https://raw.githubusercontent.com/mishamyrt/vpn-dns/main/scripts/install_latest.py | python3
 ```
 
-## Usage
-
-### Configuration
+## Configuration
 
 Before you start, you must create a configuration file:
 
@@ -21,28 +19,36 @@ mkdir ~/.config/vpn-dns
 vi ~/.config/vpn-dns/config.yaml
 ```
 
-Example content:
+The configuration consists of the following keys:
 
-```yaml
----
-interface: Wi-Fi
-VPNs:
-  - name: AbdtVPN
-    servers:
-      - 10.129.144.6
-fallback_servers:
-  - 1.1.1.1
-```
+* `interface` — Network interface name. The macbook is likely to have `Wi-Fi`.
+* `VPNs` — List of VPN connection settings.
+    * `name` — Name of the VPN connection. The exact name can be seen in the output of the `scutil --nc list` command (what is written in "quotes").
+    * `servers` — List of DNS that will be set if the connection is active.
+* `fallback_servers` — A list of DNS that will be set if none of the VPN connections listed are active.
 
-### Starting
+If several connections are active, the DNS lists will summarise. Priority corresponds to the order in the file: higher priority is higher.
+
+An example can be seen in the file [basic-config.yaml](./testdata/basic-config.yaml).
+
+## Usage
 
 Commands are available to control the application:
 
-* `start` — Starts the application in the background
-* `stop` — Stops the background application
-* `run` — Runs the application in the current process
+* `start` — Starts the application in the background.
+* `stop` — Stops the background application.
+* `run` — Runs the application in the current process without daemonization.
+* `autostart` — Controls the automatic start-up of the application.
 
-Additionally, you can pass the path to the configuration file in the `--config` argument.
+### Basic
+
+```sh
+vpn-dns start
+```
+
+### Custom configuration
+
+You can pass the path to the configuration file in the `--config` argument.
 
 ```sh
 vpn-dns --config myconfig.yaml start
@@ -61,3 +67,7 @@ To disable, run the command:
 ```sh
 vpn-dns autostart disable
 ```
+
+## License
+
+[GPL-3.0](./LICENSE).

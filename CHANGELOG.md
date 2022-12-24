@@ -15,43 +15,44 @@ and this project adheres to [Semantic Versioning][].
     * `pkg/vpn`
     * `pkg/exec`
     * `pkg/network`
-* `autostart` command help and verbosity
-* `start`  command verbosity
-* Changelog
+* `autostart` command help and verbosity.
+* `start`  command verbosity.
+* **This changelog**.
 
 ### Changed
 
-* Split packages
+* Split packages.
+* Improved documentation.
 
 ## [0.0.5][]
 
 ### Fixed
 
-* Swap autostart messages
-* Overwrite binary on installing
+* Swap autostart messages.
+* Overwrite binary on installing.
 
 ## [0.0.4][]
 
 ### Added
 
-* Autostart control
+* Autostart control.
 
 ## [0.0.3][]
 
 ### Added
 
-* Installer script
-* Linting
+* Installer script.
+* Linting.
 
 ### Fixed
 
-* Improve code style
+* Improve code style.
 
 ## [0.0.2][]
 
 ### Fixed
 
-* Remove UPX packing (broke the build, I'll figure it out later)
+* Remove UPX packing (broke the arm64 build, I'll figure it out later).
 
 ## [0.0.1][]
 
