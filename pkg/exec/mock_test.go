@@ -31,4 +31,10 @@ func TestMock(t *testing.T) {
 	if len(stdout) > 0 || len(stderr) > 0 {
 		t.Errorf("Unexpected values: out - %v; err - %v", stdout, stderr)
 	}
+
+	mock.ShoudFail = true
+	_, _, err := mock.Run(command)
+	if err == nil {
+		t.Errorf("Unexpected nil error")
+	}
 }
