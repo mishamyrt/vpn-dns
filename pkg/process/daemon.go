@@ -29,8 +29,8 @@ func (d *Daemon) Pid() int {
 	return pid
 }
 
-func (c *Daemon) Running() bool {
-	pid := c.Pid()
+func (d *Daemon) Running() bool {
+	pid := d.Pid()
 	if pid == 0 {
 		return false
 	}
