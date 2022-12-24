@@ -43,7 +43,9 @@ release:
 	git tag "v$(VERSION)"
 	git push --tags
 
-build:
+build: \
+	$(DARWIN_ARM64) \
+	$(DARWIN_AMD64)
 
 run:
 	go run "$(ENTRYFILE)"
