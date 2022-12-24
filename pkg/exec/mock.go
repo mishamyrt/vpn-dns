@@ -12,7 +12,10 @@ type Mock struct {
 }
 
 func (m *Mock) Run(name string, args ...string) (string, string, error) {
-	m.LastCommand = name + " " + strings.Join(args, " ")
+	m.LastCommand = name
+	if len(args) > 0 {
+		m.LastCommand += " " + strings.Join(args, " ")
+	}
 	return m.Stdout.String(), m.Stderr.String(), nil
 }
 
