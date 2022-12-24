@@ -29,11 +29,17 @@ func assertConnected(t *testing.T, expected bool, output string) {
 
 func assertError(t *testing.T) {
 	t.Helper()
-	m := exec.Mock{}
-	m.Stderr.WriteString("Bla bla bla, some error")
-	_, err := vpn.IsConnected(connectionName, m.Run)
+	mock := exec.Mock{}
+	mock.Stderr.WriteString("Bla bla bla, some error")
+	_, err := vpn.IsConnected(connectionName, mock.Run)
 	if !errors.Is(err, vpn.ErrCommandFailed) {
 		t.Errorf("Unexpected error: %v", err)
+	}
+	mock.Clear()
+	mock.ShoudFail = true
+	_, err = vpn.IsConnected(connectionName, mock.Run)
+	if err == nil {
+		t.Errorf("Unexpected nil error")
 	}
 }
 

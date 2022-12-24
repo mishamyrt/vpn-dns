@@ -1,6 +1,7 @@
 package config_test
 
 import (
+	"errors"
 	"testing"
 	"vpn-dns/pkg/config"
 )
@@ -23,5 +24,9 @@ func TestGetServers(t *testing.T) {
 	}
 	if multiple[0] != "1.1.1.1" || multiple[1] != "3.3.3.3" {
 		t.Errorf("Unexpected output: 1. %v      2. %v", multiple[0], multiple[1])
+	}
+	_, err = cfg.GetServers([]string{"last"})
+	if !errors.Is(err, config.ErrNameNotFound) {
+		t.Errorf("Unexpected error: %v", err)
 	}
 }

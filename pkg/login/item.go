@@ -8,11 +8,11 @@ import (
 type Item struct {
 	PackageName string
 	Command     []string
-	path        string
+	Path        string
 }
 
 func (it *Item) IsSet() bool {
-	info, err := os.Stat(it.path)
+	info, err := os.Stat(it.Path)
 	if os.IsNotExist(err) {
 		return false
 	}
@@ -21,14 +21,14 @@ func (it *Item) IsSet() bool {
 
 func (it *Item) Remove() error {
 	if it.IsSet() {
-		return os.Remove(it.path)
+		return os.Remove(it.Path)
 	}
-	return nil
+	return os.ErrNotExist
 }
 
 func (it *Item) Write() error {
 	content := it.render()
-	err := os.WriteFile(it.path, []byte(content), 0644) //nolint:gomnd
+	err := os.WriteFile(it.Path, []byte(content), 0644) //nolint:gomnd
 	if err != nil {
 		return err
 	}
@@ -50,7 +50,7 @@ func NewItem(name string, command string, path string) Item {
 	item := Item{
 		PackageName: name,
 		Command:     strings.Split(command, " "),
-		path:        path,
+		Path:        path,
 	}
 	return item
 }

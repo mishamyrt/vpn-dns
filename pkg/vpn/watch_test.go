@@ -1,6 +1,7 @@
 package vpn_test
 
 import (
+	"errors"
 	"testing"
 	"time"
 	"vpn-dns/pkg/exec"
@@ -15,22 +16,31 @@ func TestWatch(t *testing.T) {
 	watcher.ConnectionCheckInterval = 10 * time.Millisecond
 	watcher.Run()
 	updatesCount := 0
-	for active := range watcher.Updates {
+	defer watcher.Close()
+	for {
 		updatesCount++
-		switch len(active) {
-		case 0:
-			if updatesCount != 1 {
-				t.Errorf("Got empty, expected value")
+		select {
+		case active := <-watcher.Updates:
+			switch len(active) {
+			case 0:
+				if updatesCount != 1 {
+					t.Errorf("Got empty, expected value")
+				}
+				mock.Clear()
+				mock.Stdout.WriteString(outConnected)
+			case 2:
+				if updatesCount != 2 {
+					t.Errorf("Got values, expected to be empty")
+				}
+				mock.ShoudFail = true
+			default:
+				t.Errorf("Got unexpected value %v", "")
 			}
-			mock.Clear()
-			mock.Stdout.WriteString(outConnected)
-		case 2:
-			if updatesCount != 2 {
-				t.Errorf("Got values, expected to be empty")
+		case err := <-watcher.Errors:
+			if !errors.Is(err, exec.ErrMockCommand) {
+				t.Errorf("Unexpected error %v", err)
 			}
-			watcher.Close()
-		default:
-			t.Errorf("Got unexpected value %v", "")
+			return
 		}
 	}
 }

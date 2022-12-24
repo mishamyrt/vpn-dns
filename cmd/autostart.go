@@ -40,10 +40,12 @@ var autostartCmd = &cobra.Command{
 			switch args[0] {
 			case "enable":
 				err = item.Write()
-				fmt.Println("Enabled.")
+				fmt.Println("Autostart is enabled")
 			case "disable":
-				err = item.Remove()
-				fmt.Println("Disabled.")
+				if isSet {
+					err = item.Remove()
+				}
+				fmt.Println("Autostart is disabled")
 			default:
 				fmt.Println("Unknown command.")
 			}
