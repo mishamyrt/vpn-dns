@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning][].
     * `pkg/exec`
     * `pkg/network`
 * `autostart` command verbosity
+* `start`  command verbosity
 * Changelog
 
 ### Changed
