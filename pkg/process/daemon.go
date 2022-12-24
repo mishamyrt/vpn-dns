@@ -10,7 +10,7 @@ import (
 
 type Daemon struct {
 	PidPath string
-	LogPath string
+	Context *daemon.Context
 }
 
 func (d *Daemon) Pid() int {
@@ -29,30 +29,8 @@ func (d *Daemon) Pid() int {
 	return pid
 }
 
-func (d *Daemon) Start() error {
-	if d.Running() {
-		return os.ErrExist
-	}
-	cntxt := &daemon.Context{
-		PidFileName: d.PidPath,
-		LogFileName: d.LogPath,
-		WorkDir:     "./",
-	}
-
-	child, err := cntxt.Reborn()
-	if err != nil {
-		return err
-	}
-	if child != nil {
-		return ErrChildNotDone
-	}
-	defer cntxt.Release()
-
-	return nil
-}
-
-func (d *Daemon) Running() bool {
-	pid := d.Pid()
+func (c *Daemon) Running() bool {
+	pid := c.Pid()
 	if pid == 0 {
 		return false
 	}
@@ -73,8 +51,15 @@ func (d *Daemon) Stop() error {
 }
 
 func NewDaemon(name string) Daemon {
+	pidPath := "/tmp/" + name + ".pid"
+	logPath := "/tmp/" + name + ".log"
 	return Daemon{
-		PidPath: "/tmp/" + name + ".pid",
-		LogPath: "/tmp/" + name + ".log",
+		PidPath: pidPath,
+		Context: &daemon.Context{
+			PidFileName: pidPath,
+			LogFileName: logPath,
+			PidFilePerm: 0644, //nolint:gomnd
+			WorkDir:     "./",
+		},
 	}
 }
