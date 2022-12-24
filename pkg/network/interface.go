@@ -1,28 +1,31 @@
 package network
 
 import (
-	"bytes"
-	"os/exec"
 	"strings"
+	"vpn-dns/pkg/exec"
 )
 
 type Interface struct {
 	Name string
+	run  exec.CommandRunner
 }
 
 // SetDNS sets interface domain name servers.
 func (n *Interface) SetDNS(servers []string) error {
-	var stdout bytes.Buffer
-	var stderr bytes.Buffer
-	cmd := exec.Command("networksetup", "-setdnsservers", n.Name, strings.Join(servers, " "))
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-	err := cmd.Run()
+	dnsConfig := strings.Join(servers, " ")
+	stdout, stderr, err := n.run("networksetup", "-setdnsservers", n.Name, dnsConfig)
 	if err != nil {
 		return err
 	}
-	if stderr.Len() > 0 || stdout.Len() > 0 {
+	if len(stderr) > 0 || len(stdout) > 0 {
 		return ErrDNSSet
 	}
 	return nil
+}
+
+func NewInterface(name string, run exec.CommandRunner) Interface {
+	return Interface{
+		Name: name,
+		run:  run,
+	}
 }

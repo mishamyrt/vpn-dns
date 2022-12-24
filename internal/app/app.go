@@ -24,9 +24,7 @@ type App struct {
 }
 
 func (a *App) Run() {
-	iface := network.Interface{
-		Name: a.config.Interface,
-	}
+	iface := network.NewInterface(a.config.Interface, exec.Run)
 	vpns := a.config.VPNs.GetNames()
 	watcher := vpn.NewWatcher(vpns, exec.Run)
 	watcher.Run()
