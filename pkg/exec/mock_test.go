@@ -15,12 +15,15 @@ func TestMock(t *testing.T) {
 	mock.Stdout.WriteString(stdoutMsg)
 	mock.Stderr.WriteString(stderrMsg)
 
-	stdout, stderr, _ := mock.Run(command)
+	stdout, stderr, _ := mock.Run(command, "1", "2", "3")
 	if stdout != stdoutMsg {
 		t.Errorf("Unexpected stdout value: %v", stdout)
 	}
 	if stderr != stderrMsg {
 		t.Errorf("Unexpected stderr value: %v", stderr)
+	}
+	if mock.LastCommand != command+" 1 2 3" {
+		t.Errorf("Unexpected command: %v", mock.LastCommand)
 	}
 
 	mock.Clear()
