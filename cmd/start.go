@@ -22,7 +22,7 @@ var startCmd = &cobra.Command{
 			fmt.Println("Error while starting daemon:", err.Error())
 		}
 		if child == nil {
-			defer daemon.Context.Release()
+			defer daemon.Context.Release() //nolint:errcheck
 			app.Run()
 		} else {
 			fmt.Println("Daemon is started")

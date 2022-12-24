@@ -59,7 +59,7 @@ func NewChanger(configPath string, run exec.CommandRunner) (Changer, error) {
 	var changer Changer
 	cfg, err := config.Read(configPath)
 	if err != nil {
-		return changer, nil
+		return changer, err
 	}
 	changer.iface = network.NewInterface(cfg.Interface, run)
 	changer.config = cfg
