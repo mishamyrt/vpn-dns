@@ -3,7 +3,7 @@ package login_test
 import (
 	"strings"
 	"testing"
-	"vpn-dns/internal/login"
+	"vpn-dns/pkg/login"
 )
 
 func assertKey(t *testing.T, plist string, k string) {

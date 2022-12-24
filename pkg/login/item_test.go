@@ -4,7 +4,7 @@ import (
 	"os"
 	"strings"
 	"testing"
-	"vpn-dns/internal/login"
+	"vpn-dns/pkg/login"
 )
 
 const packageName = "testfile"

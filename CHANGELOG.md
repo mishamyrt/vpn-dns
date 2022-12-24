@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning][].
 ### Added
 
 * Tests🔥:
-    * `internal/login`
+    * `pkg/login`
     * `pkg/config`
     * `pkg/vpn`
     * `pkg/exec`
