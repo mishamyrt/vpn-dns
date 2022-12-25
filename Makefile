@@ -2,15 +2,17 @@ VERSION = 0.0.5
 
 GC = go build -ldflags="-X 'vpn-dns/cmd.Version=v$(VERSION)' -s -w"
 ENTRYFILE = main.go
+MEMTEST_ENTRYFILE = memtest/memtest.go
 
 BUILD_DIR = build
 BINARY_NAME = vpn-dns
 
 DARWIN_ARM64 = $(BUILD_DIR)/$(BINARY_NAME)_arm64
 DARWIN_AMD64 = $(BUILD_DIR)/$(BINARY_NAME)_amd64
+DARWIN_MEMTEST = $(BUILD_DIR)/$(BINARY_NAME)_memtest
 
 define build_binary
-    env GOOS="$(2)" GOARCH="$(3)" $(GC) -o "$(1)" "$(ENTRYFILE)"
+    env GOOS="darwin" GOARCH="$(2)" $(GC) -o "$(1)" $(ENTRYFILE)
 endef
 
 GOSRC := \
@@ -19,10 +21,16 @@ GOSRC := \
 	$(wildcard pkg/**/*.go)
 
 $(DARWIN_ARM64): $(GOSRC)
-	$(call build_binary,$(DARWIN_ARM64),darwin,arm64)
+	$(call build_binary,$(DARWIN_ARM64),arm64)
 
 $(DARWIN_AMD64): $(GOSRC)
-	$(call build_binary,$(DARWIN_AMD64),darwin,amd64)
+	$(call build_binary,$(DARWIN_AMD64),amd64)
+
+$(DARWIN_MEMTEST): $(GOSRC)
+	go build \
+		-ldflags="-X 'vpn-dns/cmd.Version=memtest'" \
+		-o "$(DARWIN_MEMTEST)" \
+		"$(MEMTEST_ENTRYFILE)"
 
 all: \
 	$(DARWIN_ARM64) \
@@ -37,6 +45,16 @@ coverage:
 	go test -coverprofile=coverage.out ./...
 	go tool cover -html=coverage.out
 	rm coverage.out
+
+.PHONY: memtest-run
+memtest-run: $(DARWIN_MEMTEST)
+	./$(DARWIN_MEMTEST) run
+
+.PHONY: memtest-collect
+memtest-collect:
+	rm -rf memtest/data
+	mkdir -p memtest/data
+	python3 scripts/collect_heap.py
 
 .PHONY: release
 release:
