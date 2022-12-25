@@ -51,10 +51,11 @@ memtest-run: $(DARWIN_MEMTEST)
 	./$(DARWIN_MEMTEST) run
 
 .PHONY: memtest-collect
-memtest-collect:
-	rm -rf memtest/data
-	mkdir -p memtest/data
-	python3 scripts/collect_heap.py
+memtest-view:
+	go tool pprof \
+        -http=:8081 \
+        -alloc_space \
+        http://localhost:8080/debug/pprof/heap
 
 .PHONY: release
 release:
