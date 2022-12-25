@@ -39,22 +39,30 @@ func (d *Daemon) Running() bool {
 	if pid == 0 {
 		return false
 	}
-	process, err := os.FindProcess(pid)
-	if err != nil {
-		return false
-	}
-	err = process.Signal(syscall.Signal(0))
-	return err == nil
+	return d.running(pid)
 }
 
 // Stop background process.
 // Returns os.ErrProcessDone if process is not running.
 func (d *Daemon) Stop() error {
 	pid := d.Pid()
-	if pid == 0 {
+	if pid == 0 || !d.running(pid) {
 		return os.ErrProcessDone
 	}
-	return syscall.Kill(pid, syscall.SIGINT)
+	err := syscall.Kill(pid, syscall.SIGKILL)
+	if err != nil {
+		return err
+	}
+	return os.Remove(d.PidPath)
+}
+
+func (d *Daemon) running(pid int) bool {
+	process, err := os.FindProcess(pid)
+	if err != nil {
+		return false
+	}
+	err = process.Signal(syscall.Signal(0))
+	return err == nil
 }
 
 // NewDaemon creates daemon instance.
