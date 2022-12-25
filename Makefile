@@ -56,7 +56,8 @@ clear:
 	rm -rf "$(BUILD_DIR)"
 
 lint:
-	golangci-lint run -E lll -E misspell -E prealloc -E stylecheck -E gocritic
+	golangci-lint run
+	revive -config revive.toml  ./...
 
 install: build
 	cp -f build/vpn-dns_arm64 /usr/local/bin/vpn-dns
