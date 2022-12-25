@@ -3,6 +3,8 @@ package vpndns
 
 import (
 	"log"
+	"os"
+	"strings"
 	"vpn-dns/pkg/config"
 	"vpn-dns/pkg/exec"
 	"vpn-dns/pkg/network"
@@ -14,21 +16,22 @@ type Changer struct {
 	iface   network.Interface
 	config  config.Config
 	execute exec.CommandRunner
+	watcher vpn.Watcher
 }
 
 // Run watcher.
 func (c *Changer) Run() {
-	watcher := vpn.NewWatcher(
+	c.watcher = vpn.NewWatcher(
 		c.config.VPNs.GetNames(),
 		exec.Run,
 	)
-	watcher.Run()
-	defer watcher.Close()
+	c.watcher.Run()
+	defer c.watcher.Close()
 	for {
 		select {
-		case update := <-watcher.Updates:
+		case update := <-c.watcher.Updates:
 			c.handleUpdate(update)
-		case err := <-watcher.Errors:
+		case err := <-c.watcher.Errors:
 			c.handleError(err)
 		}
 	}
@@ -55,7 +58,12 @@ func (c *Changer) handleUpdate(vpns []string) {
 }
 
 func (c *Changer) handleError(err error) {
-	log.Println("Error:", err.Error())
+	if strings.Contains(err.Error(), "signal: killed") {
+		log.Println("Got sigkill, exiting.")
+		c.watcher.Close()
+		os.Exit(0)
+	}
+	log.Printf("Error: %v", err)
 }
 
 // NewChanger creates new VPN DNS Changer.
