@@ -14,7 +14,7 @@ var nameServers = []string{"55.55.55.55", "11.11.11.11"}
 
 func TestInterface(t *testing.T) {
 	t.Parallel()
-	mock := exec.Mock{}
+	mock := exec.MockCommand{}
 	iface := network.NewInterface(ifaceName, mock.Run)
 	if iface.Name != ifaceName {
 		t.Errorf("Unexpected name: %v", ifaceName)
@@ -27,7 +27,7 @@ func TestInterface(t *testing.T) {
 	if mock.LastCommand != expectedCmd {
 		t.Errorf("Unexpected command: %v", mock.LastCommand)
 	}
-	mock.Stderr.WriteString("Some error")
+	mock.Out.WriteString("Some error")
 	err = iface.SetDNS([]string{"55.55.55.55", "11.11.11.11"})
 	if !errors.Is(err, network.ErrNotSet) {
 		t.Errorf("Unexpected error: %v", err)

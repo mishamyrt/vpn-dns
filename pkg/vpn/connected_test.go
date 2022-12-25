@@ -1,7 +1,6 @@
 package vpn_test
 
 import (
-	"errors"
 	"testing"
 	"vpn-dns/pkg/exec"
 	"vpn-dns/pkg/vpn"
@@ -13,8 +12,8 @@ const outDisconnected = "Disconnected\n"
 
 func assertConnected(t *testing.T, expected bool, output string) {
 	t.Helper()
-	mock := exec.Mock{}
-	mock.Stdout.WriteString(output)
+	mock := exec.MockCommand{}
+	mock.Out.WriteString(output)
 	result, err := vpn.IsConnected(connectionName, mock.Run)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
@@ -29,15 +28,9 @@ func assertConnected(t *testing.T, expected bool, output string) {
 
 func assertError(t *testing.T) {
 	t.Helper()
-	mock := exec.Mock{}
-	mock.Stderr.WriteString("Bla bla bla, some error")
-	_, err := vpn.IsConnected(connectionName, mock.Run)
-	if !errors.Is(err, vpn.ErrCommandFailed) {
-		t.Errorf("Unexpected error: %v", err)
-	}
-	mock.Clear()
+	mock := exec.MockCommand{}
 	mock.ShoudFail = true
-	_, err = vpn.IsConnected(connectionName, mock.Run)
+	_, err := vpn.IsConnected(connectionName, mock.Run)
 	if err == nil {
 		t.Errorf("Unexpected nil error")
 	}

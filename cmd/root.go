@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"vpn-dns/internal/vpndns"
-	"vpn-dns/pkg/exec"
 	"vpn-dns/pkg/process"
 
 	"github.com/spf13/cobra"
@@ -51,7 +50,7 @@ func init() {
 }
 
 func createApp() (vpndns.Changer, process.Daemon) {
-	app, err := vpndns.NewChanger(configPath, exec.Run)
+	app, err := vpndns.NewChanger(configPath)
 	if err != nil {
 		fmt.Println("Can't initialize app:", err.Error())
 		os.Exit(1)

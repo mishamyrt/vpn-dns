@@ -10,9 +10,10 @@ import (
 
 func TestWatch(t *testing.T) {
 	t.Parallel()
-	mock := exec.Mock{}
-	mock.Stdout.WriteString(outDisconnected)
-	watcher := vpn.NewWatcher([]string{"first", "second"}, mock.Run)
+	mock := exec.MockCommand{}
+	mock.Out.WriteString(outDisconnected)
+	watcher := vpn.NewWatcher([]string{"first", "second"})
+	watcher.Execute = mock.Run
 	watcher.ConnectionCheckInterval = 10 * time.Millisecond
 	watcher.Run()
 	updatesCount := 0
@@ -21,17 +22,21 @@ func TestWatch(t *testing.T) {
 		updatesCount++
 		select {
 		case active := <-watcher.Updates:
-			switch len(active) {
+			switch len(*active) {
 			case 0:
 				if updatesCount != 1 {
 					t.Errorf("Got empty, expected value")
 				}
+				// Reset count to cause update
+				watcher.IFacesCount = 0
 				mock.Clear()
-				mock.Stdout.WriteString(outConnected)
+				mock.Out.WriteString(outConnected)
 			case 2:
 				if updatesCount != 2 {
 					t.Errorf("Got values, expected to be empty")
 				}
+				watcher.IFacesCount = 0
+				mock.Clear()
 				mock.ShoudFail = true
 			default:
 				t.Errorf("Got unexpected value %v", "")

@@ -11,14 +11,10 @@ import (
 var ErrCommandFailed = errors.New("scutil has been failed")
 
 // IsConnected checks if connection with given name is active.
-// Returns ErrCommandFailed if scutil is failed.
 func IsConnected(name string, run exec.CommandRunner) (bool, error) {
-	stdout, stderr, err := run("scutil", "--nc", "status", name)
+	out, err := run("scutil", "--nc", "status", name)
 	if err != nil {
 		return false, err
 	}
-	if len(stderr) > 0 {
-		return false, ErrCommandFailed
-	}
-	return strings.HasPrefix(stdout, "Connected"), nil
+	return strings.HasPrefix(out, "Connected"), nil
 }

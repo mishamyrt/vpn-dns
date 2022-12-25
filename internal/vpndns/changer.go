@@ -15,16 +15,13 @@ import (
 type Changer struct {
 	iface   network.Interface
 	config  config.Config
-	execute exec.CommandRunner
+	cmd     exec.OSCommand
 	watcher vpn.Watcher
 }
 
 // Run watcher.
 func (c *Changer) Run() {
-	c.watcher = vpn.NewWatcher(
-		c.config.VPNs.GetNames(),
-		exec.Run,
-	)
+	c.watcher = vpn.NewWatcher(c.config.VPNs.GetNames())
 	c.watcher.Run()
 	defer c.watcher.Close()
 	for {
@@ -37,15 +34,15 @@ func (c *Changer) Run() {
 	}
 }
 
-func (c *Changer) handleUpdate(vpns []string) {
-	if len(vpns) == 0 {
+func (c *Changer) handleUpdate(vpns *[]string) {
+	if len(*vpns) == 0 {
 		log.Println("VPNs not connected, setting fallback servers")
 		err := c.iface.SetDNS(c.config.FallbackServers)
 		if err != nil {
 			log.Println("Error while setting fallback DNS")
 		}
 	} else {
-		servers, err := c.config.GetServers(vpns)
+		servers, err := c.config.GetServers(*vpns)
 		if err != nil {
 			c.handleError(err)
 		}
@@ -68,14 +65,15 @@ func (c *Changer) handleError(err error) {
 
 // NewChanger creates new VPN DNS Changer.
 // Returns error if error is unreadable.
-func NewChanger(configPath string, run exec.CommandRunner) (Changer, error) {
+func NewChanger(configPath string) (Changer, error) {
 	var changer Changer
+	cmd := exec.OSCommand{}
 	cfg, err := config.Read(configPath)
 	if err != nil {
 		return changer, err
 	}
-	changer.iface = network.NewInterface(cfg.Interface, run)
+	changer.iface = network.NewInterface(cfg.Interface, cmd.Run)
 	changer.config = cfg
-	changer.execute = run
+	changer.cmd = cmd
 	return changer, nil
 }

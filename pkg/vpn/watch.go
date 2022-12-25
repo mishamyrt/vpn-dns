@@ -2,25 +2,29 @@
 package vpn
 
 import (
+	"net"
 	"time"
 	"vpn-dns/pkg/exec"
 )
 
 // ConnectionCheckInterval means the time that passes between connection checks.
-var ConnectionCheckInterval = 500 * time.Millisecond
+var ConnectionCheckInterval = 700 * time.Millisecond
 
 // Watcher is an entity that monitors changes in enabled VPNs and returns updates.
 type Watcher struct {
 	Names                   []string
-	Updates                 chan []string
+	Updates                 chan *[]string
 	Errors                  chan error
 	CloseCheckInterval      time.Duration
 	ConnectionCheckInterval time.Duration
-	execute                 exec.CommandRunner
+	Execute                 exec.CommandRunner
+	cmd                     exec.OSCommand
 	closing                 bool
 	closed                  bool
 	inited                  bool
 	statuses                []bool
+	active                  []string
+	IFacesCount             int
 }
 
 // Close watcher channels.
@@ -47,46 +51,64 @@ func (w *Watcher) start() {
 			w.closed = true
 			return
 		}
-		connected, changed := w.collectState()
+		if !w.hasInterfaceChanges() {
+			time.Sleep(w.ConnectionCheckInterval)
+			continue
+		}
+		changed := w.collectState()
 		if changed || !w.inited {
 			w.inited = true
-			w.Updates <- connected
+			w.Updates <- &w.active
 		}
-		time.Sleep(w.ConnectionCheckInterval)
 	}
 }
 
-func (w *Watcher) collectState() ([]string, bool) {
-	connected := make([]string, 0)
+func (w *Watcher) hasInterfaceChanges() bool {
+	addrs, _ := net.InterfaceAddrs()
+	ifacesCount := len(addrs)
+	if ifacesCount != w.IFacesCount {
+		w.IFacesCount = ifacesCount
+		return true
+	}
+	return false
+}
+
+func (w *Watcher) collectState() bool {
 	changed := false
 	for i := range w.Names { //nolint:varnamelen
-		status, err := IsConnected(w.Names[i], w.execute)
+		status, err := IsConnected(w.Names[i], w.Execute)
 		if err != nil {
 			w.Errors <- err
 			break
 		}
 		if status != w.statuses[i] {
-			changed = true
+			if !changed {
+				changed = true
+				w.active = nil
+			}
 			w.statuses[i] = status
 			if status {
-				connected = append(connected, w.Names[i])
+				w.active = append(w.active, w.Names[i])
 			}
 		}
 	}
-	return connected, changed
+	return changed
 }
 
 // NewWatcher creates new VPN watcher.
-func NewWatcher(names []string, execute exec.CommandRunner) Watcher {
+func NewWatcher(names []string) Watcher {
+	cmd := exec.OSCommand{}
 	watcher := Watcher{
 		Names:                   names,
-		Updates:                 make(chan []string),
+		Updates:                 make(chan *[]string),
 		Errors:                  make(chan error),
 		ConnectionCheckInterval: ConnectionCheckInterval,
 		CloseCheckInterval:      ConnectionCheckInterval,
 		inited:                  false,
-		execute:                 execute,
+		cmd:                     cmd,
+		Execute:                 cmd.Run,
 		statuses:                make([]bool, len(names)),
+		active:                  make([]string, 0),
 	}
 	return watcher
 }

@@ -15,11 +15,11 @@ type Interface struct {
 // SetDNS sets interface domain name servers.
 func (n *Interface) SetDNS(servers []string) error {
 	dnsConfig := strings.Join(servers, " ")
-	stdout, stderr, err := n.run("networksetup", "-setdnsservers", n.Name, dnsConfig)
+	out, err := n.run("networksetup", "-setdnsservers", n.Name, dnsConfig)
 	if err != nil {
 		return err
 	}
-	if len(stderr) > 0 || len(stdout) > 0 {
+	if len(out) > 0 {
 		return ErrNotSet
 	}
 	return nil
