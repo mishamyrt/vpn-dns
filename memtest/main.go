@@ -1,4 +1,5 @@
-// VPN DNS Changer.
+// A special version of the application which includes additional functions for memory debugging.
+// For details, see the memtest section of the Makefile.
 package main
 
 import (

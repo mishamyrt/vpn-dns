@@ -2,7 +2,7 @@ VERSION = 0.0.6
 
 GC = go build -ldflags="-X 'vpn-dns/cmd.Version=v$(VERSION)' -s -w"
 ENTRYFILE = main.go
-MEMTEST_ENTRYFILE = memtest/memtest.go
+MEMTEST_ENTRYFILE = memtest/main.go
 
 BUILD_DIR = build
 BINARY_NAME = vpn-dns
@@ -26,15 +26,16 @@ $(DARWIN_ARM64): $(GOSRC)
 $(DARWIN_AMD64): $(GOSRC)
 	$(call build_binary,$(DARWIN_AMD64),amd64)
 
-$(DARWIN_MEMTEST): $(GOSRC)
+$(MEMTEST_CURRENT): $(GOSRC)
 	go build \
 		-ldflags="-X 'vpn-dns/cmd.Version=memtest'" \
-		-o "$(DARWIN_MEMTEST)" \
+		-o "$(MEMTEST_CURRENT)" \
 		"$(MEMTEST_ENTRYFILE)"
 
 all: \
 	$(DARWIN_ARM64) \
-	$(DARWIN_AMD64)
+	$(DARWIN_AMD64) \
+	$(MEMTEST_CURRENT)
 
 .PHONY: test
 test:
@@ -46,11 +47,15 @@ coverage:
 	go tool cover -html=coverage.out
 	rm coverage.out
 
-.PHONY: memtest-run
-memtest-run: $(DARWIN_MEMTEST)
-	./$(DARWIN_MEMTEST) run
+# Memory testing utils.
 
-.PHONY: memtest-collect
+# Runs special version of app with memory debugging utils.
+.PHONY: memtest-run
+memtest-run:
+	go run $(MEMTEST_ENTRYFILE) run
+
+# Opens browser with app memory info. Special version of app must be running.
+.PHONY: memtest-view
 memtest-view:
 	go tool pprof \
         -http=:8081 \
