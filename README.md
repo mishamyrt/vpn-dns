@@ -21,11 +21,11 @@ vi ~/.config/vpn-dns/config.yaml
 
 The configuration consists of the following keys:
 
-* `interface` — Network interface name. The macbook is likely to have `Wi-Fi`.
-* `VPNs` — List of VPN connection settings.
-    * `name` — Name of the VPN connection. The exact name can be seen in the output of the `scutil --nc list` command (what is written in "quotes").
-    * `servers` — List of DNS that will be set if the connection is active.
-* `fallback_servers` — A list of DNS that will be set if none of the VPN connections listed are active.
+* `interface` — network interface name. The macbook is likely to have `Wi-Fi`.
+* `VPNs` — list of VPN connection settings.
+    * `name` — name of the VPN connection. The exact name can be seen in the output of the `scutil --nc list` command (what is written in "quotes").
+    * `servers` — list of DNS that will be set if the connection is active.
+* `fallback_servers` — list of DNS that will be set if none of the VPN connections listed are active.
 
 If several connections are active, the DNS lists will summarise. Priority corresponds to the order in the file: higher priority is higher.
 
@@ -35,10 +35,10 @@ An example can be seen in the file [basic-config.yaml](./testdata/basic-config.y
 
 Commands are available to control the application:
 
-* `start` — Starts the application in the background.
-* `stop` — Stops the background application.
-* `run` — Runs the application in the current process without daemonization.
-* `autostart` — Controls the automatic start-up of the application.
+* `start` — starts the application in the background.
+* `stop` — stops the background application.
+* `run` — runs the application in the current process without daemonization.
+* `autostart` — controls the automatic start-up of the application.
 
 ### Basic
 
@@ -67,6 +67,17 @@ To disable, run the command:
 ```sh
 vpn-dns autostart disable
 ```
+
+## Development
+
+The repository is set up with auxiliary [Makefile](./Makefile) targets:
+
+* `build` — compile the project.
+* `clear` — remove all build artifacts.
+* `test` — run unit tests.
+* `lint` — check code style. Requires `golangci-lint` and `revive` to be installed.
+* `coverage` — generate and open test coverage HTML report.
+* `install` — installs the built version on the system. To work correctly, it should be run with `sudo`.
 
 ## License
 
