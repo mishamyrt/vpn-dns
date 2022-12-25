@@ -46,8 +46,8 @@ release:
 .PHONY: build
 build: all
 
-.PHONY: clear
-clear:
+.PHONY: clean
+clean:
 	rm -rf "$(BUILD_DIR)"
 
 .PHONY: lint

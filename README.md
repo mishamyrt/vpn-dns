@@ -73,7 +73,7 @@ vpn-dns autostart disable
 The repository is set up with auxiliary [Makefile](./Makefile) targets:
 
 * `build` — compile the project.
-* `clear` — remove all build artifacts.
+* `clean` — remove all build artifacts.
 * `test` — run unit tests.
 * `lint` — check code style. Requires `golangci-lint` and `revive` to be installed.
 * `coverage` — generate and open test coverage HTML report.
