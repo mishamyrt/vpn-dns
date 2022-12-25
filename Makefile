@@ -1,4 +1,4 @@
-VERSION = 0.0.5
+VERSION = 0.0.6
 
 GC = go build -ldflags="-X 'vpn-dns/cmd.Version=v$(VERSION)' -s -w"
 ENTRYFILE = main.go
