@@ -30,11 +30,11 @@ var autostartEnableCmd = &cobra.Command{
 	Short: "Enables automatic startup",
 	Run: func(cmd *cobra.Command, args []string) {
 		item := createLoginItem()
-		err := item.Write()
 		if item.IsSet() {
 			fmt.Println("Autostart is already enabled.")
 			os.Exit(1)
 		}
+		err := item.Write()
 		if err != nil {
 			fmt.Println("Can't write login item:", err.Error())
 			os.Exit(1)
