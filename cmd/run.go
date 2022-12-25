@@ -1,3 +1,4 @@
+// Package cmd contains descriptions and handlers for vpn-dns CLI.
 package cmd
 
 import (

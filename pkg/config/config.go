@@ -1,6 +1,7 @@
+// Package config provides tools for working with the VPN DNS configuration file.
 package config
 
-// Config represents vpn-dns configuration.
+// Config represents VPN DNS changer configuration.
 type Config struct {
 	Interface       string
 	FallbackServers []string
@@ -8,6 +9,7 @@ type Config struct {
 }
 
 // GetServers returns servers by active VPN connection names.
+// Returns error if VPN name not exist.
 func (c *Config) GetServers(activeVPNs []string) ([]string, error) {
 	servers := make([]string, 0)
 	for i := range activeVPNs {

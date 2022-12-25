@@ -1,3 +1,4 @@
+// Package network provides support tools for working with network devices.
 package network
 
 import (
@@ -5,6 +6,7 @@ import (
 	"vpn-dns/pkg/exec"
 )
 
+// Interface represents network interface controller.
 type Interface struct {
 	Name string
 	run  exec.CommandRunner
@@ -18,11 +20,12 @@ func (n *Interface) SetDNS(servers []string) error {
 		return err
 	}
 	if len(stderr) > 0 || len(stdout) > 0 {
-		return ErrDNSSet
+		return ErrNotSet
 	}
 	return nil
 }
 
+// NewInterface creates new network interface controller entity.
 func NewInterface(name string, run exec.CommandRunner) Interface {
 	return Interface{
 		Name: name,

@@ -1,3 +1,4 @@
+// Package vpn provides tools for working with the macOS system VPN.
 package vpn
 
 import (
@@ -8,22 +9,25 @@ import (
 // ConnectionCheckInterval means the time that passes between connection checks.
 var ConnectionCheckInterval = 500 * time.Millisecond
 
+// Watcher is an entity that monitors changes in enabled VPNs and returns updates.
 type Watcher struct {
 	Names                   []string
 	Updates                 chan []string
 	Errors                  chan error
 	CloseCheckInterval      time.Duration
 	ConnectionCheckInterval time.Duration
-	_execute                exec.CommandRunner
-	_closing                bool
-	_closed                 bool
-	_inited                 bool
+	execute                 exec.CommandRunner
+	closing                 bool
+	closed                  bool
+	inited                  bool
+	statuses                []bool
 }
 
+// Close watcher channels.
 func (w *Watcher) Close() {
-	w._closing = true
+	w.closing = true
 	for {
-		if w._closed {
+		if w.closed {
 			break
 		}
 		time.Sleep(w.CloseCheckInterval)
@@ -32,43 +36,47 @@ func (w *Watcher) Close() {
 	close(w.Errors)
 }
 
+// Run watcher in goroutine.
 func (w *Watcher) Run() {
 	go w.start()
 }
 
 func (w *Watcher) start() {
-	statuses := make([]bool, len(w.Names))
-	var hasChanges bool
-	var active []string
 	for {
-		if w._closing {
-			w._closed = true
+		if w.closing {
+			w.closed = true
 			return
 		}
-		hasChanges = false
-		active = make([]string, 0)
-		for i := range w.Names { //nolint:varnamelen
-			status, err := IsConnected(w.Names[i], w._execute)
-			if err != nil {
-				w.Errors <- err
-				break
-			}
-			if status != statuses[i] {
-				hasChanges = true
-				statuses[i] = status
-				if status {
-					active = append(active, w.Names[i])
-				}
-			}
-		}
-		if hasChanges || !w._inited {
-			w._inited = true
-			w.Updates <- active
+		connected, changed := w.collectState()
+		if changed || !w.inited {
+			w.inited = true
+			w.Updates <- connected
 		}
 		time.Sleep(w.ConnectionCheckInterval)
 	}
 }
 
+func (w *Watcher) collectState() ([]string, bool) {
+	connected := make([]string, 0)
+	changed := false
+	for i := range w.Names { //nolint:varnamelen
+		status, err := IsConnected(w.Names[i], w.execute)
+		if err != nil {
+			w.Errors <- err
+			break
+		}
+		if status != w.statuses[i] {
+			changed = true
+			w.statuses[i] = status
+			if status {
+				connected = append(connected, w.Names[i])
+			}
+		}
+	}
+	return connected, changed
+}
+
+// NewWatcher creates new VPN watcher.
 func NewWatcher(names []string, execute exec.CommandRunner) Watcher {
 	watcher := Watcher{
 		Names:                   names,
@@ -76,8 +84,9 @@ func NewWatcher(names []string, execute exec.CommandRunner) Watcher {
 		Errors:                  make(chan error),
 		ConnectionCheckInterval: ConnectionCheckInterval,
 		CloseCheckInterval:      ConnectionCheckInterval,
-		_inited:                 false,
-		_execute:                execute,
+		inited:                  false,
+		execute:                 execute,
+		statuses:                make([]bool, len(names)),
 	}
 	return watcher
 }

@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning][].
 * `autostart` command help and verbosity.
 * `start`  command verbosity.
 * **This changelog**.
+* Missing comments.
 
 ### Changed
 

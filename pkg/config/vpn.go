@@ -1,8 +1,12 @@
+// Package config provides tools for working with the VPN DNS configuration file.
 package config
 
 import (
-	"os"
+	"errors"
 )
+
+// ErrNotExist indicates that VPN is not exist or not provided.
+var ErrNotExist = errors.New("given vpn name is not exist")
 
 // VPNs represents names to servers mapping.
 type VPNs map[string][]string
@@ -12,7 +16,7 @@ func (v *VPNs) GetServers(name string) ([]string, error) {
 	if servers, found := map[string][]string(*v)[name]; found {
 		return servers, nil
 	}
-	return []string{}, os.ErrNotExist
+	return []string{}, ErrNotExist
 }
 
 // GetNames returns all VPN names in configuration.

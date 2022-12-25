@@ -1,3 +1,4 @@
+// Package cmd contains descriptions and handlers for vpn-dns CLI.
 package cmd
 
 import (
@@ -26,6 +27,7 @@ var rootCmd = &cobra.Command{
 	Short:   "An app that fixes macOS DNS behavior when using a VPN",
 }
 
+// Execute is the main CLI entrypoint.
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {

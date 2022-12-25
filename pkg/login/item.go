@@ -1,3 +1,4 @@
+// Package login provides tools for working with autorun on macOS.
 package login
 
 import (
@@ -5,12 +6,14 @@ import (
 	"strings"
 )
 
+// Item represent login item.
 type Item struct {
 	PackageName string
 	Command     []string
 	Path        string
 }
 
+// IsSet checks if login item is written.
 func (it *Item) IsSet() bool {
 	info, err := os.Stat(it.Path)
 	if os.IsNotExist(err) {
@@ -19,6 +22,8 @@ func (it *Item) IsSet() bool {
 	return !info.IsDir()
 }
 
+// Remove login item.
+// Returns os.ErrNotExist if not set.
 func (it *Item) Remove() error {
 	if it.IsSet() {
 		return os.Remove(it.Path)
@@ -26,6 +31,7 @@ func (it *Item) Remove() error {
 	return os.ErrNotExist
 }
 
+// Write login item.
 func (it *Item) Write() error {
 	content := it.render()
 	err := os.WriteFile(it.Path, []byte(content), 0644) //nolint:gomnd
@@ -46,6 +52,7 @@ func (it *Item) render() string {
 	return list.Join()
 }
 
+// NewItem creates login item.
 func NewItem(name string, command string, path string) Item {
 	item := Item{
 		PackageName: name,

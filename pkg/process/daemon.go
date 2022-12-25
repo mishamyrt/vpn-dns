@@ -1,3 +1,4 @@
+// Package process provides support tools for dealing with background processes.
 package process
 
 import (
@@ -8,11 +9,14 @@ import (
 	"github.com/sevlyar/go-daemon"
 )
 
+// Daemon represents background process.
 type Daemon struct {
 	PidPath string
 	Context *daemon.Context
 }
 
+// Pid is current process id.
+// If process is not running, returns 0.
 func (d *Daemon) Pid() int {
 	_, err := os.Stat(d.PidPath)
 	if err != nil {
@@ -29,6 +33,7 @@ func (d *Daemon) Pid() int {
 	return pid
 }
 
+// Running tells if process is running.
 func (d *Daemon) Running() bool {
 	pid := d.Pid()
 	if pid == 0 {
@@ -42,6 +47,8 @@ func (d *Daemon) Running() bool {
 	return err == nil
 }
 
+// Stop background process.
+// Returns os.ErrProcessDone if process is not running.
 func (d *Daemon) Stop() error {
 	pid := d.Pid()
 	if pid == 0 {
@@ -50,6 +57,7 @@ func (d *Daemon) Stop() error {
 	return syscall.Kill(pid, syscall.SIGINT)
 }
 
+// NewDaemon creates daemon instance.
 func NewDaemon(name string) Daemon {
 	pidPath := "/tmp/" + name + ".pid"
 	logPath := "/tmp/" + name + ".log"
@@ -58,7 +66,6 @@ func NewDaemon(name string) Daemon {
 		Context: &daemon.Context{
 			PidFileName: pidPath,
 			LogFileName: logPath,
-			PidFilePerm: 0644, //nolint:gomnd
 			WorkDir:     "./",
 		},
 	}

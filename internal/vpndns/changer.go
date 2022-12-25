@@ -1,3 +1,4 @@
+// Package vpndns provides tools to switch DNS depending on VPN.
 package vpndns
 
 import (
@@ -8,12 +9,14 @@ import (
 	"vpn-dns/pkg/vpn"
 )
 
+// Changer is an entity that monitors VPN changes and changes DNS.
 type Changer struct {
 	iface   network.Interface
 	config  config.Config
 	execute exec.CommandRunner
 }
 
+// Run watcher.
 func (c *Changer) Run() {
 	watcher := vpn.NewWatcher(
 		c.config.VPNs.GetNames(),
@@ -55,6 +58,8 @@ func (c *Changer) handleError(err error) {
 	log.Println("Error:", err.Error())
 }
 
+// NewChanger creates new VPN DNS Changer.
+// Returns error if error is unreadable.
 func NewChanger(configPath string, run exec.CommandRunner) (Changer, error) {
 	var changer Changer
 	cfg, err := config.Read(configPath)

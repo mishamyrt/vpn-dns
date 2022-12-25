@@ -1,3 +1,4 @@
+// VPN DNS Changer.
 package main
 
 import (

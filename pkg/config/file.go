@@ -1,3 +1,4 @@
+// Package config provides tools for working with the VPN DNS configuration file.
 package config
 
 import (
@@ -6,13 +7,13 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// VPNConfig represents YAML configuration VPN entry.
+// VPNEntry represents YAML configuration VPN entry.
 type VPNEntry struct {
 	Name    string   `yaml:"name"`
 	Servers []string `yaml:"servers"`
 }
 
-// ConfigFile represents YAML configuration.
+// File represents YAML configuration.
 type File struct {
 	Interface       string     `yaml:"interface"`
 	VPNs            []VPNEntry `yaml:"VPNs"`
@@ -20,6 +21,7 @@ type File struct {
 }
 
 // Read configuration file.
+// Returns error if file not exist or unreadable.
 func Read(path string) (Config, error) {
 	var configFile File
 	var config Config

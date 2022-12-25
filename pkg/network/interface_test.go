@@ -29,7 +29,7 @@ func TestInterface(t *testing.T) {
 	}
 	mock.Stderr.WriteString("Some error")
 	err = iface.SetDNS([]string{"55.55.55.55", "11.11.11.11"})
-	if !errors.Is(err, network.ErrDNSSet) {
+	if !errors.Is(err, network.ErrNotSet) {
 		t.Errorf("Unexpected error: %v", err)
 	}
 
