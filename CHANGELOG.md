@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning][].
     * `pkg/vpn`
     * `pkg/exec`
     * `pkg/network`
+    * `pkg/process`
 * `autostart` command help and verbosity.
 * `start`  command verbosity.
 * **This changelog**.
