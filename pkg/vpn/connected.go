@@ -14,7 +14,7 @@ var ErrCommandFailed = errors.New("scutil has been failed")
 func IsConnected(name string, run exec.CommandRunner) (bool, error) {
 	out, err := run("scutil", "--nc", "status", name)
 	if err != nil {
-		return false, err
+		return false, exec.NewCommandErr(out)
 	}
 	return strings.HasPrefix(out, "Connected"), nil
 }

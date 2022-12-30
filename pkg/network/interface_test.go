@@ -1,7 +1,6 @@
 package network_test
 
 import (
-	"errors"
 	"strings"
 	"testing"
 	"vpn-dns/pkg/exec"
@@ -29,7 +28,7 @@ func TestInterface(t *testing.T) {
 	}
 	mock.Out.WriteString("Some error")
 	err = iface.SetDNS([]string{"55.55.55.55", "11.11.11.11"})
-	if !errors.Is(err, network.ErrNotSet) {
+	if !exec.IsCommandErr(err) {
 		t.Errorf("Unexpected error: %v", err)
 	}
 

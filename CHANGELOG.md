@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning][].
 
 ## 0.0.7 — Unreleased
 
+### Fixed
+
+* Log the output of failed commands instead of faceless errors.
+
 ### Changed
 
 * The `fallback_servers` parameter has become optional.

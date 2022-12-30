@@ -22,11 +22,8 @@ func (n *Interface) SetDNS(servers []string) error {
 	}
 
 	out, err := n.run("networksetup", "-setdnsservers", n.Name, dnsConfig)
-	if err != nil {
-		return err
-	}
-	if len(out) > 0 {
-		return ErrNotSet
+	if err != nil || len(out) > 0 {
+		return exec.NewCommandErr(out)
 	}
 	return nil
 }

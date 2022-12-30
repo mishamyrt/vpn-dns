@@ -1,7 +1,6 @@
 package vpn_test
 
 import (
-	"errors"
 	"testing"
 	"time"
 	"vpn-dns/pkg/exec"
@@ -42,7 +41,7 @@ func TestWatch(t *testing.T) {
 				t.Errorf("Got unexpected value %v", "")
 			}
 		case err := <-watcher.Errors:
-			if !errors.Is(err, exec.ErrMockCommand) {
+			if !exec.IsCommandErr(err) {
 				t.Errorf("Unexpected error %v", err)
 			}
 			return
