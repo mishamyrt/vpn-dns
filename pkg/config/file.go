@@ -17,7 +17,7 @@ type VPNEntry struct {
 type File struct {
 	Interface       string     `yaml:"interface"`
 	VPNs            []VPNEntry `yaml:"VPNs"`
-	FallbackServers []string   `yaml:"fallback_servers"`
+	FallbackServers []string   `yaml:"fallback_servers,omitempty"`
 }
 
 // Read configuration file.

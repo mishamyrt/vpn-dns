@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][],
 and this project adheres to [Semantic Versioning][].
 
+## 0.0.7 — Unreleased
+
+### Changed
+
+* The `fallback_servers` parameter has become optional.
+
 ## [0.0.6]
 
 ### Added
