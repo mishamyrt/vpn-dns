@@ -9,7 +9,7 @@ BINARY_NAME = vpn-dns
 
 DARWIN_ARM64 = $(BUILD_DIR)/$(BINARY_NAME)_arm64
 DARWIN_AMD64 = $(BUILD_DIR)/$(BINARY_NAME)_amd64
-DARWIN_MEMTEST = $(BUILD_DIR)/$(BINARY_NAME)_memtest
+MEMTEST_CURRENT = $(BUILD_DIR)/$(BINARY_NAME)_memtest
 
 define build_binary
     env GOOS="darwin" GOARCH="$(2)" $(GC) -o "$(1)" $(ENTRYFILE)
@@ -51,8 +51,8 @@ coverage:
 
 # Runs special version of app with memory debugging utils.
 .PHONY: memtest-run
-memtest-run:
-	go run $(MEMTEST_ENTRYFILE) run
+memtest-run: $(MEMTEST_CURRENT)
+	$(MEMTEST_CURRENT) run
 
 # Opens browser with app memory info. Special version of app must be running.
 .PHONY: memtest-view
