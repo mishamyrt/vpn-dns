@@ -39,14 +39,14 @@ func (c *Changer) handleUpdate(vpns *[]string) {
 		log.Println("VPNs not connected, setting fallback servers")
 		err := c.iface.SetDNS(c.config.FallbackServers)
 		if err != nil {
-			log.Println("Error while setting fallback DNS")
+			c.handleError(err)
 		}
 	} else {
 		servers, err := c.config.GetServers(*vpns)
 		if err != nil {
 			c.handleError(err)
 		}
-		log.Println("Setting custom servers:", servers)
+		log.Printf("Setting custom servers: %v", servers)
 		err = c.iface.SetDNS(servers)
 		if err != nil {
 			c.handleError(err)
