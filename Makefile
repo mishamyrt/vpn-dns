@@ -26,7 +26,7 @@ $(DARWIN_ARM64): $(GOSRC)
 $(DARWIN_AMD64): $(GOSRC)
 	$(call build_binary,$(DARWIN_AMD64),amd64)
 
-$(MEMTEST_CURRENT): $(GOSRC)
+$(MEMTEST_CURRENT): $(GOSRC) $(MEMTEST_ENTRYFILE)
 	go build \
 		-ldflags="-X 'vpn-dns/cmd.Version=memtest'" \
 		-o "$(MEMTEST_CURRENT)" \
