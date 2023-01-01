@@ -32,6 +32,11 @@ func TestInterface(t *testing.T) {
 		t.Errorf("Unexpected error: %v", err)
 	}
 
+	err = iface.SetDNS([]string{})
+	if !strings.HasSuffix(mock.LastCommand, "Empty") {
+		t.Errorf("Unexpected command: '%v'", mock.LastCommand)
+	}
+
 	mock.Clear()
 	mock.ShoudFail = true
 	err = iface.SetDNS([]string{"55.55.55.55", "11.11.11.11"})
