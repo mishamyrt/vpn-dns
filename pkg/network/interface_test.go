@@ -31,8 +31,12 @@ func TestInterface(t *testing.T) {
 	if !exec.IsCommandErr(err) {
 		t.Errorf("Unexpected error: %v", err)
 	}
+	mock.Clear()
 
 	err = iface.SetDNS([]string{})
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
 	if !strings.HasSuffix(mock.LastCommand, "Empty") {
 		t.Errorf("Unexpected command: '%v'", mock.LastCommand)
 	}
