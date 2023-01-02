@@ -1,29 +1,36 @@
 package login_test
 
 import (
-	"log"
 	"os"
 	"strings"
 	"testing"
 	"vpn-dns/pkg/login"
 )
 
-func TestLaunchAgentPath(t *testing.T) {
-	t.Parallel()
-	path, err := login.LaunchAgentPath(packageName)
+type PathBuilder func(packageName string) (string, error)
+
+func assertPath(t *testing.T, build PathBuilder) {
+	t.Helper()
+	path, err := build(packageName)
 	if err != nil {
 		t.Errorf("Unexpected error: %v", err)
 	}
 	if !strings.HasSuffix(path, packageName+".plist") {
-		t.Errorf("Unexpected path: %v", path)
+		t.Errorf("Expected path to ends with .plist extension: %v", path)
 	}
+}
 
-	err = os.Unsetenv("HOME")
-	if err != nil {
-		log.Fatal(err)
+func assertBrokenHome(t *testing.T, build PathBuilder) {
+	t.Helper()
+	os.Unsetenv("HOME")
+	_, err := build(packageName)
+	if err.Error() != "$HOME is not defined" {
+		t.Errorf("Unexpected error: %v", err)
 	}
-	_, err = login.LaunchAgentPath(packageName)
-	if err == nil {
-		t.Errorf("Unexpected nil")
-	}
+}
+
+func TestLaunchAgentPath(t *testing.T) {
+	t.Parallel()
+	assertPath(t, login.LaunchAgentPath)
+	assertBrokenHome(t, login.LaunchAgentPath)
 }

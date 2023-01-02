@@ -57,11 +57,8 @@ func (d *Daemon) Stop() error {
 }
 
 func (d *Daemon) running(pid int) bool {
-	process, err := os.FindProcess(pid)
-	if err != nil {
-		return false
-	}
-	err = process.Signal(syscall.Signal(0))
+	process, _ := os.FindProcess(pid)
+	err := process.Signal(syscall.Signal(0))
 	return err == nil
 }
 

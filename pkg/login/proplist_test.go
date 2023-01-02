@@ -33,21 +33,40 @@ func assertString(t *testing.T, plist string, v string) {
 	}
 }
 
+func assertHeader(t *testing.T, plist string) {
+	t.Helper()
+	if !strings.Contains(plist, "PropertyList-1.0") {
+		t.Errorf("Missing header: %v", plist)
+	}
+}
+
 func TestPropList(t *testing.T) {
 	t.Parallel()
+
+	boolKey := "IsItWorks"
+	boolValue := true
+
+	stringKey := "CanIAddStringValue"
+	stringValue := "Yes i can"
+
+	stringArrayKey := "CanIAddMultipleStrings"
+	stringArrayValue := []string{"first", "second", "third"}
+
 	props := login.NewPropList()
-	props.Bool("IsItWorks", true)
-	props.String("CanIAddStringValue", "Yes i can")
-	props.StringArray("CanIAddMultipleStrings", []string{"first", "second", "third"})
+	props.Bool(boolKey, true)
+	props.String(stringKey, stringValue)
+	props.StringArray(stringArrayKey, stringArrayValue)
 	list := props.Join()
-	if !strings.Contains(list, "PropertyList-1.0") {
-		t.Errorf("Missing header: %v", list)
-	}
-	assertKey(t, list, "IsItWorks")
-	assertBool(t, list, true)
-	assertKey(t, list, "CanIAddStringValue")
-	assertString(t, list, "Yes i can")
-	assertString(t, list, "first")
-	assertString(t, list, "second")
-	assertString(t, list, "third")
+
+	assertHeader(t, list)
+
+	assertKey(t, list, boolKey)
+	assertBool(t, list, boolValue)
+
+	assertKey(t, list, stringKey)
+	assertString(t, list, stringValue)
+
+	assertString(t, list, stringArrayValue[0])
+	assertString(t, list, stringArrayValue[1])
+	assertString(t, list, stringArrayValue[2])
 }

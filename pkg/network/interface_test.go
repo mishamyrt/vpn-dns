@@ -27,7 +27,7 @@ func TestInterface(t *testing.T) {
 		t.Errorf("Unexpected command: %v", mock.LastCommand)
 	}
 	mock.Out.WriteString("Some error")
-	err = iface.SetDNS([]string{"55.55.55.55", "11.11.11.11"})
+	err = iface.SetDNS(nameServers)
 	if !exec.IsCommandErr(err) {
 		t.Errorf("Unexpected error: %v", err)
 	}
