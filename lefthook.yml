@@ -2,8 +2,7 @@ pre-commit:
   parallel: true
   commands:
     golangci-lint:
-      glob: "*.go"
-      run: golangci-lint run {staged_files}
+      run: golangci-lint run ./...
     revive-lint:
       glob: "*.go"
       run: revive -config revive.toml {staged_files}

@@ -44,6 +44,8 @@ Commands are available to control the application:
 
 ```sh
 vpn-dns start
+vpn-dns status
+# Running
 ```
 
 ### Custom configuration
