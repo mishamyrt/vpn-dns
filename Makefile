@@ -1,6 +1,6 @@
 VERSION = 0.0.7-dev
 
-GC = go build -ldflags="-X 'vpn-dns/cmd.Version=v$(VERSION)' -s -w"
+GC = go build -trimpath -ldflags="-X 'vpn-dns/cmd.Version=v$(VERSION)' -s -w"
 ENTRYFILE = main.go
 MEMTEST_ENTRYFILE = memtest/main.go
 
