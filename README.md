@@ -76,6 +76,7 @@ The repository is set up with auxiliary [Makefile](./Makefile) targets:
 * `clean` — remove all build artifacts.
 * `test` — run unit tests.
 * `lint` — check code style. Requires `golangci-lint` and `revive` to be installed.
+* `hook` — Installs local git hooks. Requires `lefthook` to be installed.
 * `coverage` — generate and open test coverage HTML report.
 * `install` — installs the built version on the system. To work correctly, it should be run with `sudo`.
 

@@ -82,3 +82,7 @@ lint:
 .PHONY: install
 install: build
 	cp -f "build/vpn-dns_$$(arch)" /usr/local/bin/vpn-dns
+
+.PHONY: hook
+hook:
+	lefthook install
