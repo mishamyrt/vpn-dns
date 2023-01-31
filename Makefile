@@ -12,7 +12,7 @@ DARWIN_AMD64 = $(BUILD_DIR)/$(BINARY_NAME)_amd64
 MEMTEST_CURRENT = $(BUILD_DIR)/$(BINARY_NAME)_memtest
 
 define build_binary
-    env GOOS="darwin" GOARCH="$(2)" $(GC) -o "$(1)" $(ENTRYFILE)
+    env CGO_ENABLED=0 GOOS="darwin" GOARCH="$(2)" $(GC) -o "$(1)" $(ENTRYFILE)
 endef
 
 GOSRC := \
