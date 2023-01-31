@@ -10,10 +10,14 @@ import (
 )
 
 func createLoginItem() login.Item {
-	const binPath = "/usr/local/bin/" + AppName
+	binPath, err := os.Executable()
+	if err != nil {
+		fmt.Println("Executable path is not found:", err.Error())
+		os.Exit(1)
+	}
 	itemPath, err := login.LaunchAgentPath(PackageName)
 	if err != nil {
-		fmt.Println("Can't initialize app:", err.Error())
+		fmt.Println("Can't resolve LaunchAgent path:", err.Error())
 		os.Exit(1)
 	}
 	item := login.NewItem(
