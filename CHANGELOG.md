@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][],
 and this project adheres to [Semantic Versioning][].
 
+## [0.0.8]
+
+### Added
+
+* Autostart path resolving. The binary can now be located anywhere and Autostart will catch the file.
+
+### Removed
+
+* CGO support.
+
 ## [0.0.7]
 
 ### Added
